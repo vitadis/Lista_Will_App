@@ -1,33 +1,35 @@
 package org.openjfx.Lista_Will_App;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
 
 /**
  * JavaFX App
  */
 public class App extends Application {
+	// tamaño de la ventana
+	final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    final int WIDTH = screenSize.width;
+    final int HEIGHT = screenSize.height-70;
+	
 
-    @Override
-    public void start(Stage stage) {
-        var javaVersion = SystemInfo.javaVersion();
-        var javafxVersion = SystemInfo.javafxVersion();
-
-        var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        Button bb = Nodos_Generales.crearBotonMenu("Hola guapo");
+	@Override
+	public void start(@SuppressWarnings("exports") Stage stage) {
+		// agrego el panel 2
+		var panel2 = GestionVentanas.panel2(WIDTH, HEIGHT);
+        var scene = new Scene(panel2, WIDTH, HEIGHT);
         
-        var scene = new Scene(new StackPane(bb), 640, 480);
+        
         stage.setScene(scene);
         stage.show();
-    }
+	}
 
-    public static void main(String[] args) {
-        launch();
-    }
+	public static void main(String[] args) {
+		launch();
+	}
 
 }
