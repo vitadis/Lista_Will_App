@@ -44,13 +44,5 @@ public class Seccion {
 	@Override
 	public String toString() {
 		return "Seccion [codigo=" + codigo + ", nombre=" + nombre + ", url=" + url + "]";
-	}
-
-	
-
-	// 
-	
-	
-	
-	
+	}	
 }

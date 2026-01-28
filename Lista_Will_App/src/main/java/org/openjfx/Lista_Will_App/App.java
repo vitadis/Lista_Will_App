@@ -26,8 +26,8 @@ public class App extends Application {
 		var panel2 = GestionVentanas.panel2();
 		var scene = new Scene(panel2, WIDTH, HEIGHT);
 
+		// e.- Es el parametro del evento 
 		stage.setOnCloseRequest(e -> {
-			e.consume();
 
 			if (confirmarSalida()) {
 				Platform.exit();
@@ -39,14 +39,18 @@ public class App extends Application {
 	}
 
 	// creo un Alert
-	private boolean confirmarSalida() {
+	public static boolean confirmarSalida() {
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Confirmación");
 		alert.setHeaderText("Cerrar aplicación");
 		alert.setContentText("¿Quieres salir?");
 
+		// creo un valor opcional, donde le pido el siguiente metodo, retorna el tipo
+		// del boton
 		Optional<ButtonType> result = alert.showAndWait();
 
+		// retorn un boolean, donde si esta presente y pulso ok, retorna true, de lo
+		// contrario false
 		return result.isPresent() && result.get() == ButtonType.OK;
 	}
 
