@@ -1,10 +1,19 @@
 package org.openjfx.Lista_Will_App;
 
+import java.io.File;
+import java.util.ArrayList;
+
+import clases.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -20,6 +29,10 @@ public class GestionVentanas {
 	// private static final String COLOR_DARK = "#0D47A1";
 	// private static final String COLOR_ACCENT = "#2196F3";
 	// private static final String COLOR_BG = "#E3F2FD";
+
+	// -----ARCHIVOS---------
+	private static final File PERSONA = new File("Persona.dat");
+	private static final File SECCION = new File("Seccion.dat");
 
 	@SuppressWarnings("exports")
 	public static GridPane panel2(final int WIDTH, final int HEIGHT) {
@@ -37,7 +50,7 @@ public class GestionVentanas {
 		panel.getColumnConstraints().addAll(col1, col2);
 
 		// creamos un nuevoVBox
-		VBox menIzq = parteIzqP2();
+		VBox menIzq = parteIzqP2(panel);
 
 		panel.add(menIzq, 0, 0);
 		panel.setGridLinesVisible(true);
@@ -46,7 +59,7 @@ public class GestionVentanas {
 
 	}
 
-	private static VBox parteIzqP2() {
+	private static VBox parteIzqP2(GridPane panel) {
 
 		VBox menuPanel = new VBox(20);
 		menuPanel.setAlignment(Pos.CENTER);
@@ -60,7 +73,7 @@ public class GestionVentanas {
 		Button menu5 = crearBotonMenu("7. Salir");
 
 		// agrego la accion de los botones
-		menu1.setOnAction(e -> System.out.println("Empleados"));
+		menu1.setOnAction(e -> empleados1b(panel));
 		menu2.setOnAction(e -> System.out.println("Invitados"));
 		menu3.setOnAction(e -> System.out.println("Gestionar Asistencia de invitados"));
 		menu4.setOnAction(e -> System.out.println("Filtrado de invitados"));
@@ -79,16 +92,71 @@ public class GestionVentanas {
 
 		return menuPanel;
 	}
+
 	// V2 1er button Empleados
-	
-	
+	public static void empleados1b(GridPane panel) {
+		ArrayList<Empleado> listaPer = Gestionar_Ficheros.listEmpleado(PERSONA);
+		
+		VBox empBox = new VBox(15);
+		
+		empBox.setPadding(new Insets(20));
+		// titulo 
+		Label titulo = new Label("EMPLEADOS");
+		
+		empBox.getChildren().addAll(titulo,tablaEmpleados(listaPer));
+		
+		panel.add(empBox, 1, 0);
+		
+	}
+
 	// tabla de empleados
-	
-	
-	
-	
-	
-	
+	private static TableView tablaEmpleados(ArrayList<Empleado> lista) {
+
+		TableView<Empleado> table = new TableView<>();
+		table.setStyle("-fx-background-color: white;");
+
+		TableColumn<Empleado, String> colDni = new TableColumn<>("DNI");
+		colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
+		colDni.setPrefWidth(100);
+
+		TableColumn<Empleado, String> colNombre = new TableColumn<>("Nombre");
+		colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+		colNombre.setPrefWidth(100);
+
+		TableColumn<Empleado, String> colFechaNac = new TableColumn<>("Fecha_Nacimiento");
+		colFechaNac.setCellValueFactory(new PropertyValueFactory<>("fechaNac"));
+		colFechaNac.setPrefWidth(100);
+
+		TableColumn<Empleado, String> colMail = new TableColumn<>("Email");
+		colMail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		colMail.setPrefWidth(100);
+
+		TableColumn<Empleado, String> colTelf = new TableColumn<>("Telefono");
+		colTelf.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+		colTelf.setPrefWidth(100);
+
+		TableColumn<Empleado, String> colCod = new TableColumn<>("Codigo");
+		colCod.setCellValueFactory(new PropertyValueFactory<>("codigo"));
+		colCod.setPrefWidth(100);
+		TableColumn<Empleado, String> colCargo = new TableColumn<>("Cargo");
+		colCargo.setCellValueFactory(new PropertyValueFactory<>("cargo"));
+		colCargo.setPrefWidth(100);
+
+		TableColumn<Empleado, String> colActivo = new TableColumn<>("Activo");
+		colActivo.setCellValueFactory(new PropertyValueFactory<>("activo"));
+		colActivo.setPrefWidth(100);
+
+		// agrego las columnas creadas
+		table.getColumns().addAll(colDni, colNombre, colFechaNac, colMail, colTelf, colCod, colCargo, colActivo);
+
+		// agrego las filas
+		ObservableList<Empleado> data = FXCollections.observableArrayList(lista);
+		table.setItems(data);
+		
+		return table;
+	}
+	// persona a trabajador
+
 	// -------------Plantilla de nodos repetitivos---------------
 
 	/**

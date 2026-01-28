@@ -1,4 +1,5 @@
 package org.openjfx.Lista_Will_App;
+
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,9 +11,9 @@ import java.util.ArrayList;
 import clases.*;
 
 public class Gestionar_Ficheros {
-	
+
 	// leer fichero
-	public static ArrayList<Persona> leerFichero(File archivo) {
+	public static ArrayList<Persona> leerFicheroPersona(File archivo) {
 
 		ArrayList<Persona> lista = new ArrayList<>();
 
@@ -35,7 +36,20 @@ public class Gestionar_Ficheros {
 
 		return lista;
 	}
-	
+
+	// persona a empleado
+	public static ArrayList<Empleado> listEmpleado(File archivo) {
+		ArrayList<Persona> lista = leerFicheroPersona(archivo);
+		ArrayList<Empleado> listEmp = new ArrayList<Empleado>();
+		for (Persona p : lista) {
+			if (p instanceof Empleado) {
+				Empleado e = (Empleado) p;
+				listEmp.add(e);
+			}
+		}
+		return listEmp;
+	}
+
 	// sobreescribir archivo
 	public static void sobreEscribir(ArrayList<Persona> array, File archivo) {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
