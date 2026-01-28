@@ -83,4 +83,15 @@ public class Gestionar_Ficheros {
 		}
 	}
 
+	// --------COMPROBAR EXISTENCIA DEL ARRAYLIST---------
+	public static int indiceALPCliente(ArrayList<Persona> lista, String dni) {
+		int indice = 0;
+		for (Persona p: lista) {
+			if(p instanceof Empleado && dni.equalsIgnoreCase(p.getDni())) {
+				return indice;
+			}
+			indice++;
+		}
+		return -1;
+	}
 }

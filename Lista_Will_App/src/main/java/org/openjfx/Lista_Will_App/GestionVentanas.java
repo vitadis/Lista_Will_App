@@ -67,9 +67,7 @@ public class GestionVentanas {
 
 		Label titulo = crearTitulo("TABLA EMPLEADOS");
 
-		contenedor.getChildren().addAll(titulo, tablaEmpleados(lista), new Region(), grudEmpleados2b(panel));
-
-		VBox.setVgrow(contenedor.getChildren().get(2), Priority.ALWAYS);
+		contenedor.getChildren().addAll(titulo, tablaEmpleados(lista), grudEmpleados2b(panel));
 
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
@@ -223,36 +221,84 @@ public class GestionVentanas {
 		});
 
 		btnCancelar.setOnAction(e -> {
-			tfDni.clear();
-			tfNombre.clear();
-			dpFechaNac.setValue(null);
-			tfEmail.clear();
-			tfTelefono.clear();
-			tfCodigo.clear();
-			cbCargo.setValue(null);
-			chkActivo.setSelected(true);
+			empleados1b(panel);
 		});
 
 		contenedor.getChildren().addAll(titulo, tfDni, tfNombre, dpFechaNac, tfEmail, tfTelefono, tfCodigo, cbCargo,
 				chkActivo, botones);
-		
+
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
+
+	}
+
+	// formulario eliminar un trabajador segun su dni
+	@SuppressWarnings("exports")
+	public static void formEliminarEmpleados(GridPane panel) {
+
+		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+
+		contenedor.setStyle("-fx-background-color: white;" + "-fx-background-radius: 10;" + "-fx-border-radius: 10;"
+				+ "-fx-border-color: #cccccc;");
+
+		Label titulo = new Label("AGREGAR EMPLEADO");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		TextField tfDni = new TextField();
+		tfDni.setPromptText("DNI");
+
+		Button btnEliminar = crearBotonMenu("Eliminar");
+		Button btnCancelar = crearBotonMenu("Cancelar");
+
+		HBox botones = new HBox(10, btnEliminar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+
+		btnEliminar.setOnAction(e -> {
+			// obtengo el valor de los formularios y lo guardo
+			String dni = tfDni.getText();
+			int indice = Gestionar_Ficheros.indiceALPCliente(personas, dni);
+			if (indice != -1)
+				personas.remove(indice);
+
+			// sobreescribo sin mas a mi archivo
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			empleados1b(panel);
+		});
+
+		btnCancelar.setOnAction(e -> {
+			empleados1b(panel);
+		});
 		
+		contenedor.getChildren().addAll(titulo, tfDni,botones);
+
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+
 	}
 
 	// Controles, basicamente los botones
 	private static HBox grudEmpleados2b(GridPane panel) {
 		HBox box = new HBox(15);
 		box.setAlignment(Pos.CENTER);
-
-		// botones 
-		Button btnEliminar = crearBotonMenu("Eliminar");
-		Button btnAgregar =crearBotonMenu("Agregar");
-		Button btnModificar = crearBotonMenu("Modificar");
-		box.getChildren().addAll(btnEliminar, btnAgregar, btnModificar);
+		box.setFillHeight(true);
 		
-		btnEliminar.setOnAction(e -> System.out.println("Eliminar"));
+		// botones
+		Button btnEliminar = crearBotonMenu("Eliminar");
+		Button btnAgregar = crearBotonMenu("Agregar");
+		Button btnModificar = crearBotonMenu("Modificar");
+		
+		// digo, que estos tienen prioridad al momento de ordenar
+		HBox.setHgrow(btnEliminar, Priority.ALWAYS);
+		HBox.setHgrow(btnAgregar, Priority.ALWAYS);
+		HBox.setHgrow(btnModificar, Priority.ALWAYS);
+
+		box.getChildren().addAll(btnEliminar, btnAgregar, btnModificar);
+
+		btnEliminar.setOnAction(e -> formEliminarEmpleados(panel));
 		btnAgregar.setOnAction(e -> formAgregarEmpleados(panel));
 		btnModificar.setOnAction(e -> System.out.println("Modificar"));
 
