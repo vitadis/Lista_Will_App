@@ -1,5 +1,7 @@
 package org.openjfx.Lista_Will_App;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -21,21 +23,30 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 
+// dependencias para eliminar del grid
+import javafx.scene.Node;
+import java.util.Iterator;
+
 public class GestionVentanas {
 	// ------PALETA DE COLORES--------
 	// private static final String COLOR_PRIMARY = "#1565C0";
 	private static final String COLOR_SECONDARY = "#1976D2";
 	private static final String COLOR_LIGHT = "#42A5F5";
-	// private static final String COLOR_DARK = "#0D47A1";
+	private static final String COLOR_DARK = "#0D47A1";
 	// private static final String COLOR_ACCENT = "#2196F3";
 	// private static final String COLOR_BG = "#E3F2FD";
+	
+	// ------TAMAÑO TOTAL DE LA VENTANA.------------
+	final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	final static int WIDTH = screenSize.width;
+	final static int HEIGHT = screenSize.height - 70;
 
 	// -----ARCHIVOS---------
 	private static final File PERSONA = new File("Persona.dat");
-	private static final File SECCION = new File("Seccion.dat");
+	// private static final File SECCION = new File("Seccion.dat");
 
 	@SuppressWarnings("exports")
-	public static GridPane panel2(final int WIDTH, final int HEIGHT) {
+	public static GridPane panel2() {
 		GridPane panel = new GridPane();
 
 		// creo las columnas
@@ -74,7 +85,7 @@ public class GestionVentanas {
 
 		// agrego la accion de los botones
 		menu1.setOnAction(e -> empleados1b(panel));
-		menu2.setOnAction(e -> System.out.println("Invitados"));
+		menu2.setOnAction(e -> empleados2b(panel));
 		menu3.setOnAction(e -> System.out.println("Gestionar Asistencia de invitados"));
 		menu4.setOnAction(e -> System.out.println("Filtrado de invitados"));
 		menu5.setOnAction(e -> System.out.println("Mensaje de la salida del boton"));
@@ -94,59 +105,68 @@ public class GestionVentanas {
 	}
 
 	// V2 1er button Empleados
+	@SuppressWarnings("exports")
 	public static void empleados1b(GridPane panel) {
 		ArrayList<Empleado> listaPer = Gestionar_Ficheros.listEmpleado(PERSONA);
 		
 		VBox empBox = new VBox(15);
+		empBox.setAlignment(Pos.CENTER);
 		
 		empBox.setPadding(new Insets(20));
 		// titulo 
-		Label titulo = new Label("EMPLEADOS");
+		Label titulo = new Label("TABLA EMPLEADOS");
+		titulo.setStyle("-fx-text-fill: " + COLOR_DARK + ";" + "-fx-font-size: 20px;" + "-fx-font-weight: 900;"
+				+ "-fx-font-family: 'Arial Black';");
 		
-		empBox.getChildren().addAll(titulo,tablaEmpleados(listaPer));
-		
+		empBox.getChildren().addAll(titulo,tablaEmpleados(listaPer),new Region(),new Label("Hola"));
+		VBox.setVgrow(empBox.getChildren().get(empBox.getChildren().size() - 2), Priority.ALWAYS);
+
+		eliminarElementoEn(1,0,panel);
 		panel.add(empBox, 1, 0);
 		
 	}
 
 	// tabla de empleados
-	private static TableView tablaEmpleados(ArrayList<Empleado> lista) {
-
+	@SuppressWarnings({ "unchecked" })
+	private static TableView<Empleado> tablaEmpleados(ArrayList<Empleado> lista) {
+		// tamaño de cada columna
+		double tamColumn = (WIDTH*0.8-40)/8;
+		
 		TableView<Empleado> table = new TableView<>();
-		table.setStyle("-fx-background-color: white;");
+		table.setStyle("-fx-background-color: transparent;");
 
 		TableColumn<Empleado, String> colDni = new TableColumn<>("DNI");
 		colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
-		colDni.setPrefWidth(100);
+		colDni.setPrefWidth(tamColumn);
 
 		TableColumn<Empleado, String> colNombre = new TableColumn<>("Nombre");
 		colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-		colNombre.setPrefWidth(100);
+		colNombre.setPrefWidth(tamColumn);
 
 		TableColumn<Empleado, String> colFechaNac = new TableColumn<>("Fecha_Nacimiento");
 		colFechaNac.setCellValueFactory(new PropertyValueFactory<>("fechaNac"));
-		colFechaNac.setPrefWidth(100);
+		colFechaNac.setPrefWidth(tamColumn);
 
 		TableColumn<Empleado, String> colMail = new TableColumn<>("Email");
 		colMail.setCellValueFactory(new PropertyValueFactory<>("email"));
-		colMail.setPrefWidth(100);
+		colMail.setPrefWidth(tamColumn);
 
 		TableColumn<Empleado, String> colTelf = new TableColumn<>("Telefono");
 		colTelf.setCellValueFactory(new PropertyValueFactory<>("telefono"));
-		colTelf.setPrefWidth(100);
+		colTelf.setPrefWidth(tamColumn);
 
 		TableColumn<Empleado, String> colCod = new TableColumn<>("Codigo");
 		colCod.setCellValueFactory(new PropertyValueFactory<>("codigo"));
-		colCod.setPrefWidth(100);
+		colCod.setPrefWidth(tamColumn);
 		TableColumn<Empleado, String> colCargo = new TableColumn<>("Cargo");
 		colCargo.setCellValueFactory(new PropertyValueFactory<>("cargo"));
-		colCargo.setPrefWidth(100);
+		colCargo.setPrefWidth(tamColumn);
 
 		TableColumn<Empleado, String> colActivo = new TableColumn<>("Activo");
 		colActivo.setCellValueFactory(new PropertyValueFactory<>("activo"));
-		colActivo.setPrefWidth(100);
+		colActivo.setPrefWidth(tamColumn);
 
-		// agrego las columnas creadas
+		// agrego las columnas
 		table.getColumns().addAll(colDni, colNombre, colFechaNac, colMail, colTelf, colCod, colCargo, colActivo);
 
 		// agrego las filas
@@ -155,6 +175,78 @@ public class GestionVentanas {
 		
 		return table;
 	}
+	
+	
+	// V2 2do button Empleados
+	// cambia el arraylist de invitados
+	@SuppressWarnings("exports")
+	public static void empleados2b(GridPane panel) {
+		ArrayList<Empleado> listaPer = Gestionar_Ficheros.listEmpleado(PERSONA);
+		
+		VBox empBox = new VBox(15);
+		empBox.setAlignment(Pos.CENTER);
+		
+		empBox.setPadding(new Insets(20));
+		// titulo 
+		Label titulo = new Label("TABLA INVITADOS");
+		titulo.setStyle("-fx-text-fill: " + COLOR_DARK + ";" + "-fx-font-size: 20px;" + "-fx-font-weight: 900;"
+				+ "-fx-font-family: 'Arial Black';");
+		
+		empBox.getChildren().addAll(titulo,tablaInvitados(listaPer),new Region(),new Label("Hola"));
+		VBox.setVgrow(empBox.getChildren().get(empBox.getChildren().size() - 2), Priority.ALWAYS);
+
+		eliminarElementoEn(1,0,panel);
+		
+		panel.add(empBox, 1, 0);
+		
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private static TableView<Empleado> tablaInvitados(ArrayList<Empleado> lista) {
+		// tamaño de cada columna
+		double tamColumn = (WIDTH*0.8-40)/8;
+		
+		TableView<Empleado> table = new TableView<>();
+		table.setStyle("-fx-background-color: transparent;");
+
+		TableColumn<Empleado, String> colDni = new TableColumn<>("DNI");
+		colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
+		colDni.setPrefWidth(tamColumn);
+
+		TableColumn<Empleado, String> colNombre = new TableColumn<>("Nombre");
+		colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+		colNombre.setPrefWidth(tamColumn);
+
+		TableColumn<Empleado, String> colFechaNac = new TableColumn<>("Fecha_Nacimiento");
+		colFechaNac.setCellValueFactory(new PropertyValueFactory<>("fechaNac"));
+		colFechaNac.setPrefWidth(tamColumn);
+
+		TableColumn<Empleado, String> colMail = new TableColumn<>("Email");
+		colMail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		colMail.setPrefWidth(tamColumn);
+
+		TableColumn<Empleado, String> colTelf = new TableColumn<>("Telefono");
+		colTelf.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+		colTelf.setPrefWidth(tamColumn);
+
+		// agrega los campos del invitado, cambia la clase a invitado
+
+		// agrego las columnas
+		table.getColumns().addAll(colDni, colNombre, colFechaNac, colMail, colTelf);
+
+		// agrego las filas
+		ObservableList<Empleado> data = FXCollections.observableArrayList(lista);
+		table.setItems(data);
+		
+		return table;
+	}
+	
+	
+	
+	
+	
+	
 	// persona a trabajador
 
 	// -------------Plantilla de nodos repetitivos---------------
@@ -183,6 +275,27 @@ public class GestionVentanas {
 
 		return btn;
 	}
+	
+	// ELIMINAR ELEMENTOS DE UN GRIDPANE
+	private static void eliminarElementoEn(final int col, final int row, GridPane gridPane) {
+	    ObservableList<Node> children = gridPane.getChildren();
+	    // Usamos un iterador para eliminar elementos de la lista mientras iteramos
+	    for (Iterator<Node> iterator = children.iterator(); iterator.hasNext();) {
+	        Node node = iterator.next();
+	        Integer nodeCol = GridPane.getColumnIndex(node);
+	        Integer nodeRow = GridPane.getRowIndex(node);
+
+	        // Verificamos si la columna y fila coinciden. Manejamos nulos si es necesario.
+	        boolean colMatches = (nodeCol != null && nodeCol == col);
+	        boolean rowMatches = (nodeRow != null && nodeRow == row);
+
+	        if (colMatches && rowMatches) {
+	            iterator.remove(); // Elimina el nodo del GridPane de forma segura
+	            break; // Si solo hay uno por celda, salimos
+	        }
+	    }
+	}
+	
 
 	// MIS NOTAS
 	// PUEDO PEDIR COMO PARAMETRO, EL PROPIO GRIDPANE, PARA REALIZAR LOS CAMBIOS

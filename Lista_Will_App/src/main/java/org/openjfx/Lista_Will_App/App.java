@@ -19,7 +19,7 @@ public class App extends Application {
 	@Override
 	public void start(@SuppressWarnings("exports") Stage stage) {
 		// agrego el panel 2
-		var panel2 = GestionVentanas.panel2(WIDTH, HEIGHT);
+		var panel2 = GestionVentanas.panel2();
 		var scene = new Scene(panel2, WIDTH, HEIGHT);
 
 		stage.setScene(scene);
