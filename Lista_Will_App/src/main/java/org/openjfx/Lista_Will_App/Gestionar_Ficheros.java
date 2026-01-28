@@ -13,6 +13,7 @@ import clases.*;
 public class Gestionar_Ficheros {
 
 	// leer fichero
+	@SuppressWarnings("exports")
 	public static ArrayList<Persona> leerFicheroPersona(File archivo) {
 
 		ArrayList<Persona> lista = new ArrayList<>();
@@ -38,6 +39,7 @@ public class Gestionar_Ficheros {
 	}
 
 	// persona a empleado
+	@SuppressWarnings("exports")
 	public static ArrayList<Empleado> listEmpleado(File archivo) {
 		ArrayList<Persona> lista = leerFicheroPersona(archivo);
 		ArrayList<Empleado> listEmp = new ArrayList<Empleado>();
@@ -51,11 +53,29 @@ public class Gestionar_Ficheros {
 	}
 
 	// sobreescribir archivo
-	public static void sobreEscribir(ArrayList<Persona> array, File archivo) {
+	public static void sobreEscribir(@SuppressWarnings("exports") ArrayList<Persona> array, File archivo) {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
 
 			for (Persona p : array) {
 				oos.writeObject(p);
+			}
+
+		} catch (Exception e) {
+			System.out.println("Error de escritura: " + e.getMessage());
+		}
+	}
+	
+	// sobreescribir secciones
+	public static void sobreEscribirSec(File archivo) {
+		ArrayList<Seccion> secciones = new ArrayList<Seccion>();
+		secciones.add(new Seccion("BUCEO", "buceo.com"));
+		secciones.add(new Seccion("BICICLETA","bicicleta.com"));
+		secciones.add(new Seccion("PARACAIDAS","paracaidas.com"));
+		secciones.add(new Seccion("FIESTA-JOVEN","fiestaJoven.com"));
+		
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
+			for (Seccion s:secciones) {
+				oos.writeObject(s);
 			}
 
 		} catch (Exception e) {
