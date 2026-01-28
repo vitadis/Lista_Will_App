@@ -18,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
@@ -81,7 +82,7 @@ public class GestionVentanas {
 		Button menu2 = crearBotonMenu("2. Invitados");
 		Button menu3 = crearBotonMenu("3. Gestionar asistencia de invitados");
 		Button menu4 = crearBotonMenu("4. Filtrado de Invitados");
-		Button menu5 = crearBotonMenu("7. Salir");
+		Button menu5 = crearBotonMenu("5. Salir");
 
 		// agrego la accion de los botones
 		menu1.setOnAction(e -> empleados1b(panel));
@@ -118,7 +119,7 @@ public class GestionVentanas {
 		titulo.setStyle("-fx-text-fill: " + COLOR_DARK + ";" + "-fx-font-size: 20px;" + "-fx-font-weight: 900;"
 				+ "-fx-font-family: 'Arial Black';");
 		
-		empBox.getChildren().addAll(titulo,tablaEmpleados(listaPer),new Region(),new Label("Hola"));
+		empBox.getChildren().addAll(titulo,tablaEmpleados(listaPer),new Region(),groudEmpleados2b());
 		VBox.setVgrow(empBox.getChildren().get(empBox.getChildren().size() - 2), Priority.ALWAYS);
 
 		eliminarElementoEn(1,0,panel);
@@ -174,6 +175,27 @@ public class GestionVentanas {
 		table.setItems(data);
 		
 		return table;
+	}
+	
+	//grudEmpleados2b
+	private static HBox groudEmpleados2b() {
+		HBox contenedor = new HBox(15);
+		contenedor.setAlignment(Pos.CENTER);
+		
+		// botones para el grud
+		Button btnEliminar = crearBotonMenu("Eliminar usuario");
+		Button btnAgregar = crearBotonMenu("Agregar usuario");
+		Button btnModificar = crearBotonMenu("Modificar usuario");
+		
+		// agrego las funciones del button
+		btnEliminar.setOnAction(e -> System.out.println("Eliminar"));
+		btnAgregar.setOnAction(e -> System.out.println("Agregar"));
+		btnModificar.setOnAction(e -> System.out.println("modificar"));
+
+		contenedor.getChildren().addAll(btnEliminar,btnAgregar,btnModificar);
+
+		
+		return contenedor;
 	}
 	
 	
