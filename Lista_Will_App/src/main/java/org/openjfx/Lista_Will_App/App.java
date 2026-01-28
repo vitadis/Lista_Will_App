@@ -28,6 +28,7 @@ public class App extends Application {
 
 		// e.- Es el parametro del evento 
 		stage.setOnCloseRequest(e -> {
+			e.consume(); // detengo el proceso de apagar
 
 			if (confirmarSalida()) {
 				Platform.exit();

@@ -36,5 +36,15 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Lidia/.m2/repository/org/openjfx/javafx-fxml/21/javafx-fxml-21-win.jar" sourcepath="C:/Users/Lidia/.m2/repository/org/openjfx/javafx-fxml/21/javafx-fxml-21-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="org.openjfx"/>
+			<attribute name="maven.artifactId" value="javafx-fxml"/>
+			<attribute name="maven.version" value="21"/>
+			<attribute name="maven.classifier" value="win"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

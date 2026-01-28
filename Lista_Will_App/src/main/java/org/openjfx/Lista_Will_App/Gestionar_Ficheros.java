@@ -53,7 +53,7 @@ public class Gestionar_Ficheros {
 	}
 
 	// sobreescribir archivo
-	public static void sobreEscribir(@SuppressWarnings("exports") ArrayList<Persona> array, File archivo) {
+	public static void sobreEscribirPersona(@SuppressWarnings("exports") ArrayList<Persona> array, File archivo) {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
 
 			for (Persona p : array) {

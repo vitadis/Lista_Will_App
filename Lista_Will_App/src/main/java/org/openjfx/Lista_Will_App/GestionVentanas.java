@@ -3,6 +3,7 @@ package org.openjfx.Lista_Will_App;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -25,7 +26,7 @@ public class GestionVentanas {
 	// ----------CONSTANTES----------
 
 	// Paleta de colores
-	private static final String COLOR_PRIMARY = "#1565C0";
+	// private static final String COLOR_PRIMARY = "#1565C0";
 	private static final String COLOR_SECONDARY = "#1976D2";
 	private static final String COLOR_LIGHT = "#42A5F5";
 	private static final String COLOR_DARK = "#0D47A1";
@@ -66,7 +67,7 @@ public class GestionVentanas {
 
 		Label titulo = crearTitulo("TABLA EMPLEADOS");
 
-		contenedor.getChildren().addAll(titulo, tablaEmpleados(lista), new Region(), groudEmpleados2b());
+		contenedor.getChildren().addAll(titulo, tablaEmpleados(lista), new Region(), grudEmpleados2b(panel));
 
 		VBox.setVgrow(contenedor.getChildren().get(2), Priority.ALWAYS);
 
@@ -154,13 +155,106 @@ public class GestionVentanas {
 		return table;
 	}
 
-	// Controles, basicamente los botones
+	// --------FORMULARIOS--------
+	// formulario agregar
+	@SuppressWarnings("exports")
+	public static void formAgregarEmpleados(GridPane panel) {
 
-	private static HBox groudEmpleados2b() {
+		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+
+		contenedor.setStyle("-fx-background-color: white;" + "-fx-background-radius: 10;" + "-fx-border-radius: 10;"
+				+ "-fx-border-color: #cccccc;");
+
+		Label titulo = new Label("AGREGAR EMPLEADO");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		TextField tfDni = new TextField();
+		tfDni.setPromptText("DNI");
+
+		TextField tfNombre = new TextField();
+		tfNombre.setPromptText("Nombre");
+
+		DatePicker dpFechaNac = new DatePicker();
+		dpFechaNac.setPromptText("Fecha de nacimiento");
+
+		TextField tfEmail = new TextField();
+		tfEmail.setPromptText("Email");
+
+		TextField tfTelefono = new TextField();
+		tfTelefono.setPromptText("Teléfono");
+
+		TextField tfCodigo = new TextField();
+		tfCodigo.setPromptText("Código de empleado");
+
+		ComboBox<Cargo> cbCargo = new ComboBox<>();
+		cbCargo.getItems().addAll(Cargo.values());
+		cbCargo.setPromptText("Cargo");
+
+		CheckBox chkActivo = new CheckBox("Empleado activo");
+		chkActivo.setSelected(true);
+
+		Button btnGuardar = crearBotonMenu("Guardar");
+		Button btnCancelar = crearBotonMenu("Cancelar");
+
+		HBox botones = new HBox(10, btnGuardar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+
+		// acciones de los botones
+		btnGuardar.setOnAction(e -> {
+			// obtengo el valor de los formularios y lo guardo
+			String dni = tfDni.getText();
+			String nombre = tfNombre.getText();
+			LocalDate fechaNac = dpFechaNac.getValue();
+			String email = tfEmail.getText();
+			String telefono = tfTelefono.getText();
+			String codigo = tfCodigo.getText();
+			Cargo cargo = cbCargo.getValue();
+			boolean activo = chkActivo.isSelected();
+
+			Empleado nuevoEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, codigo, cargo, activo);
+			personas.add(nuevoEmpleado);
+			// sobreescribo sin mas a mi archivo
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			empleados1b(panel);
+		});
+
+		btnCancelar.setOnAction(e -> {
+			tfDni.clear();
+			tfNombre.clear();
+			dpFechaNac.setValue(null);
+			tfEmail.clear();
+			tfTelefono.clear();
+			tfCodigo.clear();
+			cbCargo.setValue(null);
+			chkActivo.setSelected(true);
+		});
+
+		contenedor.getChildren().addAll(titulo, tfDni, tfNombre, dpFechaNac, tfEmail, tfTelefono, tfCodigo, cbCargo,
+				chkActivo, botones);
+		
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+		
+	}
+
+	// Controles, basicamente los botones
+	private static HBox grudEmpleados2b(GridPane panel) {
 		HBox box = new HBox(15);
 		box.setAlignment(Pos.CENTER);
 
-		box.getChildren().addAll(crearBotonMenu("Eliminar"), crearBotonMenu("Agregar"), crearBotonMenu("Modificar"));
+		// botones 
+		Button btnEliminar = crearBotonMenu("Eliminar");
+		Button btnAgregar =crearBotonMenu("Agregar");
+		Button btnModificar = crearBotonMenu("Modificar");
+		box.getChildren().addAll(btnEliminar, btnAgregar, btnModificar);
+		
+		btnEliminar.setOnAction(e -> System.out.println("Eliminar"));
+		btnAgregar.setOnAction(e -> formAgregarEmpleados(panel));
+		btnModificar.setOnAction(e -> System.out.println("Modificar"));
 
 		return box;
 	}
