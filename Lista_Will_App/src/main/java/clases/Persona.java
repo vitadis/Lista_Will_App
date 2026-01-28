@@ -1,7 +1,6 @@
 package clases;
 
 import java.time.LocalDate;
-import java.time.Period;
 
 public abstract class Persona {
 
@@ -65,8 +64,6 @@ public abstract class Persona {
 				+ ", telefono=" + telefono + "]";
 	}
 
-	public int calcularEdad() {
-		return Period.between(fechaNac, LocalDate.now()).getYears();
-	}
+	public abstract int calcularEdad();
 
 }

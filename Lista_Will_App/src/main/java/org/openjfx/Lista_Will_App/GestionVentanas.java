@@ -39,7 +39,7 @@ public class GestionVentanas {
 		// creamos un nuevoVBox
 		VBox menIzq = parteIzqP2();
 
-		panel.add(menIzq, 0, 0); // 1ro define la column y el 2do la fila
+		panel.add(menIzq, 0, 0);
 		panel.setGridLinesVisible(true);
 
 		return panel;
@@ -66,8 +66,8 @@ public class GestionVentanas {
 		menu4.setOnAction(e -> System.out.println("Filtrado de invitados"));
 		menu5.setOnAction(e -> System.out.println("Mensaje de la salida del boton"));
 
-		Label titulo = new Label("ISLA DE DIAGO"); // creo el label del nombre del menu
-		titulo.setStyle("-fx-text-fill: "+ COLOR_SECONDARY +";" + "-fx-font-size: 20px;" + "-fx-font-weight: 900;"
+		Label titulo = new Label("ISLA DE WILL"); // creo el label del nombre del menu
+		titulo.setStyle("-fx-text-fill: " + COLOR_SECONDARY + ";" + "-fx-font-size: 20px;" + "-fx-font-weight: 900;"
 				+ "-fx-font-family: 'Arial Black';");
 
 		menuPanel.getChildren().addAll(titulo, new Separator(), menu1, menu2, menu3, menu4, new Region(), menu5);
@@ -79,7 +79,16 @@ public class GestionVentanas {
 
 		return menuPanel;
 	}
-
+	// V2 1er button Empleados
+	
+	
+	// tabla de empleados
+	
+	
+	
+	
+	
+	
 	// -------------Plantilla de nodos repetitivos---------------
 
 	/**
@@ -107,4 +116,7 @@ public class GestionVentanas {
 		return btn;
 	}
 
+	// MIS NOTAS
+	// PUEDO PEDIR COMO PARAMETRO, EL PROPIO GRIDPANE, PARA REALIZAR LOS CAMBIOS
+	// DENTRO DEL MISMO MEDIANTE STATIC VOID
 }
