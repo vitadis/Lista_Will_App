@@ -7,8 +7,7 @@ public class ExcepcionesCreadas {
 
 	@SuppressWarnings("unused")
 	static void validarEmail(String email) throws FormatoIncorrectoException {
-		Pattern modelo = Pattern
-				.compile("^[A-Za-z0-9-\\+]+(\\.[A-Za-z0-9-]+)@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)(\\.[A-Za-z]{3})$");
+		Pattern modelo = Pattern.compile("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
 		Matcher matcher = modelo.matcher(email);
 		if (!matcher.matches()) {
 			throw new FormatoIncorrectoException("DNI con formato incorrecto");
@@ -22,4 +21,5 @@ public class ExcepcionesCreadas {
 			throw new FormatoIncorrectoException("DNI con formato incorrecto");
 		}
 	}
+	
 }

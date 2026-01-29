@@ -296,6 +296,10 @@ public class GestionVentanas {
 			int indice;
 			String dni = tfDni.getText().toUpperCase();
 			indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
+			if (!UtilFormatos.dniFormato(dni)) {
+				etiquetaError(mensajeError, "El dni tiene que tener el formato NNNNNNNNL");
+				return;
+			}
 
 			if (indice != -1) {
 				personas.remove(indice);
@@ -422,6 +426,10 @@ public class GestionVentanas {
 		HBox.setHgrow(btnGuardar, Priority.ALWAYS);
 		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
 
+		//
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
 		btnGuardar.setOnAction(e -> {
 			// obtengo el valor de los formularios y lo guardo
 			String dni = tfDni.getText();
@@ -432,6 +440,16 @@ public class GestionVentanas {
 			Cargo cargo = cbCargo.getValue();
 			boolean activo = chkActivo.isSelected();
 			// indice
+			if (nombre == "" || fechaNac == null || email == "" || telefono == "" || cargo == null) {
+				etiquetaError(mensajeError, "TODOS LOS CAMPOS SON NECESARIOS");
+				return;
+			}
+
+			if (!UtilFormatos.correoFormato(email)) {
+				etiquetaError(mensajeError, "AGREGA UN CORREO VALIDO");
+				return;
+			}
+
 			int indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
 
 			Empleado cambiarEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, cargo, activo);
@@ -446,7 +464,8 @@ public class GestionVentanas {
 			empleados1b(panel);
 		});
 
-		contenedor.getChildren().addAll(titulo, tfNombre, dpFechaNac, tfEmail, tfTelefono, cbCargo, chkActivo, botones);
+		contenedor.getChildren().addAll(titulo, tfNombre, dpFechaNac, tfEmail, tfTelefono, cbCargo, chkActivo, botones,
+				mensajeError);
 
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
@@ -525,8 +544,8 @@ public class GestionVentanas {
 
 	// etiqueta de error del dni
 	private static void etiquetaError(Label etiqueta, String mensaje) {
-		etiqueta.setText("¡¡¡"+mensaje+"!!!");
-		etiqueta.setStyle("-fx-text-fill: #D32F2F;"+ "-fx-font-weight: bold;");
+		etiqueta.setText("¡¡¡" + mensaje + "!!!");
+		etiqueta.setStyle("-fx-text-fill: #D32F2F;" + "-fx-font-weight: bold;");
 		etiqueta.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
