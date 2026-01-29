@@ -78,7 +78,7 @@ public class GestionVentanas {
 	// boton 2 invitados
 	@SuppressWarnings("exports")
 	public static void invitados2b(GridPane panel) {
-		ArrayList<Empleado> lista = Gestionar_Ficheros.listEmpleado(PERSONA);
+		ArrayList<Invitado> lista2 = Gestionar_Ficheros.listInvitado(PERSONA);
 
 		VBox contenedor = new VBox(15);
 		contenedor.setAlignment(Pos.CENTER);
@@ -86,7 +86,7 @@ public class GestionVentanas {
 
 		Label titulo = crearTitulo("TABLA INVITADOS");
 
-		contenedor.getChildren().addAll(titulo, tablaInvitados(lista), grudInvitados2b(panel));
+		contenedor.getChildren().addAll(titulo, tablaInvitados(lista2), grudInvitados2b(panel));
 
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
@@ -129,26 +129,26 @@ public class GestionVentanas {
 		TableView<Empleado> table = new TableView<>();
 		table.setItems(FXCollections.observableArrayList(lista));
 
-		double w = (WIDTH * 0.8 - 40) / 8;
+		double w = (WIDTH * 0.8 - 40) / 7;
 
 		table.getColumns().addAll(crearColumna("DNI", "dni", w), crearColumna("Nombre", "nombre", w),
 				crearColumna("Fecha", "fechaNac", w), crearColumna("Email", "email", w),
-				crearColumna("Telefono", "telefono", w), crearColumna("Codigo", "codigo", w),
-				crearColumna("Cargo", "cargo", w), crearColumna("Activo", "activo", w));
+				crearColumna("Telefono", "telefono", w), crearColumna("Cargo", "cargo", w),
+				crearColumna("Activo", "activo", w));
 
 		return table;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static TableView<Empleado> tablaInvitados(ArrayList<Empleado> lista) {
-		TableView<Empleado> table = new TableView<>();
+	private static TableView<Invitado> tablaInvitados(ArrayList<Invitado> lista) {
+		TableView<Invitado> table = new TableView<>();
 		table.setItems(FXCollections.observableArrayList(lista));
 
-		double w = (WIDTH * 0.8 - 40) / 5;
+		double w = (WIDTH * 0.8 - 40) / 6;
 
 		table.getColumns().addAll(crearColumna("DNI", "dni", w), crearColumna("Nombre", "nombre", w),
 				crearColumna("Fecha", "fechaNac", w), crearColumna("Email", "email", w),
-				crearColumna("Telefono", "telefono", w));
+				crearColumna("Telefono", "telefono", w), crearColumna("Tipo de invitado", "tipo", w));
 
 		return table;
 	}
@@ -164,7 +164,6 @@ public class GestionVentanas {
 		contenedor.setPadding(new Insets(20));
 		contenedor.setAlignment(Pos.TOP_CENTER);
 		contenedor.setMaxSize(600, 500);
-
 
 		contenedor.setStyle("-fx-background-color: white;" + "-fx-background-radius: 10;" + "-fx-border-radius: 10;"
 				+ "-fx-border-color: #cccccc;");
@@ -186,9 +185,6 @@ public class GestionVentanas {
 
 		TextField tfTelefono = new TextField();
 		tfTelefono.setPromptText("Teléfono");
-
-		TextField tfCodigo = new TextField();
-		tfCodigo.setPromptText("Código de empleado");
 
 		ComboBox<Cargo> cbCargo = new ComboBox<>();
 		cbCargo.getItems().addAll(Cargo.values());
@@ -213,11 +209,10 @@ public class GestionVentanas {
 			LocalDate fechaNac = dpFechaNac.getValue();
 			String email = tfEmail.getText();
 			String telefono = tfTelefono.getText();
-			String codigo = tfCodigo.getText();
 			Cargo cargo = cbCargo.getValue();
 			boolean activo = chkActivo.isSelected();
 
-			Empleado nuevoEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, codigo, cargo, activo);
+			Empleado nuevoEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, cargo, activo);
 			personas.add(nuevoEmpleado);
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
@@ -228,8 +223,8 @@ public class GestionVentanas {
 			empleados1b(panel);
 		});
 
-		contenedor.getChildren().addAll(titulo, tfDni, tfNombre, dpFechaNac, tfEmail, tfTelefono, tfCodigo, cbCargo,
-				chkActivo, botones);
+		contenedor.getChildren().addAll(titulo, tfDni, tfNombre, dpFechaNac, tfEmail, tfTelefono, cbCargo, chkActivo,
+				botones);
 
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
@@ -246,7 +241,7 @@ public class GestionVentanas {
 
 		VBox contenedor = new VBox(15);
 		contenedor.setMaxSize(600, 500);
-		
+
 		contenedor.setPadding(new Insets(20));
 		contenedor.setAlignment(Pos.TOP_CENTER);
 
@@ -266,12 +261,11 @@ public class GestionVentanas {
 		botones.setAlignment(Pos.CENTER);
 		HBox.setHgrow(btnEliminar, Priority.ALWAYS);
 		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
-		
 
 		btnEliminar.setOnAction(e -> {
 			// obtengo el valor de los formularios y lo guardo
 			String dni = tfDni.getText();
-			int indice = Gestionar_Ficheros.indiceALPCliente(personas, dni);
+			int indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
 			if (indice != -1)
 				personas.remove(indice);
 
@@ -283,15 +277,132 @@ public class GestionVentanas {
 		btnCancelar.setOnAction(e -> {
 			empleados1b(panel);
 		});
-		
-		contenedor.getChildren().addAll(titulo, tfDni,botones);
+
+		contenedor.getChildren().addAll(titulo, tfDni, botones);
 
 		eliminarElementoGrid(1, 0, panel);
-		
+
 		panel.add(contenedor, 1, 0);
 
 		GridPane.setHalignment(contenedor, HPos.CENTER);
 		GridPane.setValignment(contenedor, VPos.CENTER);
+	}
+	// formulario de modificar, enseñara los campos que se puedan modificar
+
+	@SuppressWarnings("exports")
+	public static void formModificarEmpleados(GridPane panel) {
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(600, 500);
+
+		contenedor.setStyle("-fx-background-color: white;" + "-fx-background-radius: 10;" + "-fx-border-radius: 10;"
+				+ "-fx-border-color: #cccccc;");
+
+		Label titulo = new Label("MODIFICAR EMPLEADO");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		TextField tfDni = new TextField();
+		tfDni.setPromptText("DNI");
+
+		Button btnModificar = crearBotonMenu("Modificar");
+		Button btnCancelar = crearBotonMenu("Cancelar");
+
+		HBox botones = new HBox(10, btnModificar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnModificar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
+
+		btnModificar.setOnAction(e -> formModiEmpTrue(panel, tfDni));
+
+		btnCancelar.setOnAction(e -> empleados1b(panel));
+
+		contenedor.getChildren().addAll(titulo, tfDni, botones);
+
+		eliminarElementoGrid(1, 0, panel);
+
+		panel.add(contenedor, 1, 0);
+
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
+
+	}
+
+	// subformulario
+	public static void formModiEmpTrue(GridPane panel, TextField tfDni) {
+		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(600, 500);
+
+		contenedor.setStyle("-fx-background-color: white;" + "-fx-background-radius: 10;" + "-fx-border-radius: 10;"
+				+ "-fx-border-color: #cccccc;");
+
+		Label titulo = new Label("MODIFICAR EMPLEADO");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		TextField tfNombre = new TextField();
+		tfNombre.setPromptText("Nombre");
+
+		DatePicker dpFechaNac = new DatePicker();
+		dpFechaNac.setPromptText("Fecha de nacimiento");
+
+		TextField tfEmail = new TextField();
+		tfEmail.setPromptText("Email");
+
+		TextField tfTelefono = new TextField();
+		tfTelefono.setPromptText("Teléfono");
+
+		ComboBox<Cargo> cbCargo = new ComboBox<>();
+		cbCargo.getItems().addAll(Cargo.values());
+		cbCargo.setPromptText("Cargo");
+
+		CheckBox chkActivo = new CheckBox("Empleado activo");
+		chkActivo.setSelected(true);
+
+		Button btnGuardar = crearBotonMenu("Guardar");
+		Button btnCancelar = crearBotonMenu("Cancelar");
+
+		HBox botones = new HBox(10, btnGuardar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnGuardar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
+		
+		btnGuardar.setOnAction(e -> {
+			// obtengo el valor de los formularios y lo guardo
+			String dni = tfDni.getText();
+			String nombre = tfNombre.getText();
+			LocalDate fechaNac = dpFechaNac.getValue();
+			String email = tfEmail.getText();
+			String telefono = tfTelefono.getText();
+			Cargo cargo = cbCargo.getValue();
+			boolean activo = chkActivo.isSelected();
+			// indice
+			int indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
+			
+			Empleado cambiarEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, cargo, activo);
+			
+			personas.set(indice, cambiarEmpleado);
+			// sobreescribo sin mas a mi archivo
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			empleados1b(panel);
+		});
+
+		btnCancelar.setOnAction(e -> {
+			empleados1b(panel);
+		});
+
+		contenedor.getChildren().addAll(titulo, tfDni, tfNombre, dpFechaNac, tfEmail, tfTelefono, cbCargo, chkActivo,
+				botones);
+
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
+
 	}
 
 	// Controles, basicamente los botones
@@ -299,12 +410,12 @@ public class GestionVentanas {
 		HBox box = new HBox(15);
 		box.setAlignment(Pos.CENTER);
 		box.setFillHeight(true);
-		
+
 		// botones
 		Button btnEliminar = crearBotonMenu("Eliminar");
 		Button btnAgregar = crearBotonMenu("Agregar");
 		Button btnModificar = crearBotonMenu("Modificar");
-		
+
 		// digo, que estos tienen prioridad al momento de ordenar
 		HBox.setHgrow(btnEliminar, Priority.ALWAYS);
 		HBox.setHgrow(btnAgregar, Priority.ALWAYS);
@@ -314,20 +425,20 @@ public class GestionVentanas {
 
 		btnEliminar.setOnAction(e -> formEliminarEmpleados(panel));
 		btnAgregar.setOnAction(e -> formAgregarEmpleados(panel));
-		btnModificar.setOnAction(e -> System.out.println("Modificar"));
+		btnModificar.setOnAction(e -> formModificarEmpleados(panel));
 
 		return box;
 	}
-	
+
 	private static HBox grudInvitados2b(GridPane panel) {
 		HBox box = new HBox(15);
 		box.setAlignment(Pos.CENTER);
 		box.setFillHeight(true);
-		
+
 		// botones
 		Button btnAgregar = crearBotonMenu("Agregar");
 		Button btnModificar = crearBotonMenu("Modificar");
-		
+
 		// digo, que estos tienen prioridad al momento de ordenar
 		HBox.setHgrow(btnAgregar, Priority.ALWAYS);
 		HBox.setHgrow(btnModificar, Priority.ALWAYS);

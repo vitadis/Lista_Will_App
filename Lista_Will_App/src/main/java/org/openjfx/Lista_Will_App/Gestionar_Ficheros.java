@@ -38,7 +38,7 @@ public class Gestionar_Ficheros {
 		return lista;
 	}
 
-	// persona a empleado
+	// ArrayList objetos separados
 	@SuppressWarnings("exports")
 	public static ArrayList<Empleado> listEmpleado(File archivo) {
 		ArrayList<Persona> lista = leerFicheroPersona(archivo);
@@ -50,6 +50,19 @@ public class Gestionar_Ficheros {
 			}
 		}
 		return listEmp;
+	}
+
+	@SuppressWarnings("exports")
+	public static ArrayList<Invitado> listInvitado(File archivo) {
+		ArrayList<Persona> lista = leerFicheroPersona(archivo);
+		ArrayList<Invitado> listaIn = new ArrayList<Invitado>();
+		for (Persona p : lista) {
+			if (p instanceof Invitado) {
+				Invitado i = (Invitado) p;
+				listaIn.add(i);
+			}
+		}
+		return listaIn;
 	}
 
 	// sobreescribir archivo
@@ -64,17 +77,17 @@ public class Gestionar_Ficheros {
 			System.out.println("Error de escritura: " + e.getMessage());
 		}
 	}
-	
+
 	// sobreescribir secciones
 	public static void sobreEscribirSec(File archivo) {
 		ArrayList<Seccion> secciones = new ArrayList<Seccion>();
 		secciones.add(new Seccion("BUCEO", "buceo.com"));
-		secciones.add(new Seccion("BICICLETA","bicicleta.com"));
-		secciones.add(new Seccion("PARACAIDAS","paracaidas.com"));
-		secciones.add(new Seccion("FIESTA-JOVEN","fiestaJoven.com"));
-		
+		secciones.add(new Seccion("BICICLETA", "bicicleta.com"));
+		secciones.add(new Seccion("PARACAIDAS", "paracaidas.com"));
+		secciones.add(new Seccion("FIESTA-JOVEN", "fiestaJoven.com"));
+
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
-			for (Seccion s:secciones) {
+			for (Seccion s : secciones) {
 				oos.writeObject(s);
 			}
 
@@ -85,14 +98,15 @@ public class Gestionar_Ficheros {
 
 	// --------COMPROBAR EXISTENCIA DEL ARRAYLIST---------
 	@SuppressWarnings("exports")
-	public static int indiceALPCliente(ArrayList<Persona> lista, String dni) {
+	public static int indiceALPEEmpleado(ArrayList<Persona> lista, String dni) {
 		int indice = 0;
-		for (Persona p: lista) {
-			if(p instanceof Empleado && dni.equalsIgnoreCase(p.getDni())) {
+		for (Persona p : lista) {
+			if (p instanceof Empleado && dni.equalsIgnoreCase(p.getDni())) {
 				return indice;
 			}
 			indice++;
 		}
 		return -1;
 	}
+
 }
