@@ -1,19 +1,23 @@
 package clases;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Asistencia {
 	private String codigo;
 	private LocalDate fechaIni;
 	private LocalDate fechaFin;
-	private Integer valocaion;
+	private ArrayList<String> codSecciones;
+	private Integer valoracion;
 
-	public Asistencia(String codigo, LocalDate fechaIni, LocalDate fechaFin, Integer valocaion) {
+	public Asistencia(String codigo, LocalDate fechaIni, LocalDate fechaFin, Integer valoracion,
+			ArrayList<String> codSecciones) {
 		super();
 		this.codigo = codigo;
 		this.fechaIni = fechaIni;
 		this.fechaFin = fechaFin;
-		this.valocaion = valocaion;
+		this.valoracion = valoracion;
+		this.codSecciones = codSecciones;
 	}
 
 	public String getCodigo() {
@@ -40,18 +44,26 @@ public class Asistencia {
 		this.fechaFin = fechaFin;
 	}
 
-	public Integer getValocaion() {
-		return valocaion;
+	public ArrayList<String> getCodSecciones() {
+		return codSecciones;
 	}
 
-	public void setValocaion(Integer valocaion) {
-		this.valocaion = valocaion;
+	public void setCodSecciones(ArrayList<String> codSecciones) {
+		this.codSecciones = codSecciones;
+	}
+
+	public Integer getValoracion() {
+		return valoracion;
+	}
+
+	public void setValoracion(Integer valocaion) {
+		this.valoracion = valocaion;
 	}
 
 	@Override
 	public String toString() {
 		return "Asistencia [codigo=" + codigo + ", fechaIni=" + fechaIni + ", fechaFin=" + fechaFin + ", valocaion="
-				+ valocaion + "]";
+				+ valoracion + "]";
 	}
 
 }
