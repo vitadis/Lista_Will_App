@@ -237,6 +237,14 @@ public class GestionVentanas {
 				etiquetaError(mensajeError, "AGREGA UN CORREO VALIDO");
 				return;
 			}
+			if (!UtilFormatos.formatoNumero(telefono)) {
+				etiquetaError(mensajeError, "AGREGA UN NUMERO VALIDO DE 9 DIG.");
+				return;
+			}
+			if (!UtilFormatos.mayorDeEdad(fechaNac)) {
+				etiquetaError(mensajeError, "TIENES QUE SER MAYOR DE EDAD");
+				return;
+			}
 
 			Empleado nuevoEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, cargo, activo);
 			personas.add(nuevoEmpleado);
@@ -450,6 +458,15 @@ public class GestionVentanas {
 				return;
 			}
 
+			if (!UtilFormatos.formatoNumero(telefono)) {
+				etiquetaError(mensajeError, "AGREGA UN NUMERO VALIDO DE 9 DIG.");
+				return;
+			}
+			
+			if (!UtilFormatos.mayorDeEdad(fechaNac)) {
+				etiquetaError(mensajeError, "TIENES QUE SER MAYOR DE EDAD");
+				return;
+			}
 			int indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
 
 			Empleado cambiarEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, cargo, activo);
