@@ -84,6 +84,7 @@ public class Gestionar_Ficheros {
 	}
 
 	// --------COMPROBAR EXISTENCIA DEL ARRAYLIST---------
+	@SuppressWarnings("exports")
 	public static int indiceALPCliente(ArrayList<Persona> lista, String dni) {
 		int indice = 0;
 		for (Persona p: lista) {

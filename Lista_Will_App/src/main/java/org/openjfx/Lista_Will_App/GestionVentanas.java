@@ -10,8 +10,10 @@ import java.util.Iterator;
 import clases.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -84,9 +86,7 @@ public class GestionVentanas {
 
 		Label titulo = crearTitulo("TABLA INVITADOS");
 
-		contenedor.getChildren().addAll(titulo, tablaInvitados(lista), new Region(), new Label("Hola"));
-
-		VBox.setVgrow(contenedor.getChildren().get(2), Priority.ALWAYS);
+		contenedor.getChildren().addAll(titulo, tablaInvitados(lista), grudInvitados2b(panel));
 
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
@@ -163,6 +163,8 @@ public class GestionVentanas {
 		VBox contenedor = new VBox(15);
 		contenedor.setPadding(new Insets(20));
 		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(600, 500);
+
 
 		contenedor.setStyle("-fx-background-color: white;" + "-fx-background-radius: 10;" + "-fx-border-radius: 10;"
 				+ "-fx-border-color: #cccccc;");
@@ -200,6 +202,8 @@ public class GestionVentanas {
 
 		HBox botones = new HBox(10, btnGuardar, btnCancelar);
 		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnGuardar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
 
 		// acciones de los botones
 		btnGuardar.setOnAction(e -> {
@@ -230,6 +234,8 @@ public class GestionVentanas {
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
 
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
 	}
 
 	// formulario eliminar un trabajador segun su dni
@@ -239,6 +245,8 @@ public class GestionVentanas {
 		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
 
 		VBox contenedor = new VBox(15);
+		contenedor.setMaxSize(600, 500);
+		
 		contenedor.setPadding(new Insets(20));
 		contenedor.setAlignment(Pos.TOP_CENTER);
 
@@ -256,6 +264,9 @@ public class GestionVentanas {
 
 		HBox botones = new HBox(10, btnEliminar, btnCancelar);
 		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnEliminar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
+		
 
 		btnEliminar.setOnAction(e -> {
 			// obtengo el valor de los formularios y lo guardo
@@ -276,8 +287,11 @@ public class GestionVentanas {
 		contenedor.getChildren().addAll(titulo, tfDni,botones);
 
 		eliminarElementoGrid(1, 0, panel);
+		
 		panel.add(contenedor, 1, 0);
 
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
 	}
 
 	// Controles, basicamente los botones
@@ -300,6 +314,27 @@ public class GestionVentanas {
 
 		btnEliminar.setOnAction(e -> formEliminarEmpleados(panel));
 		btnAgregar.setOnAction(e -> formAgregarEmpleados(panel));
+		btnModificar.setOnAction(e -> System.out.println("Modificar"));
+
+		return box;
+	}
+	
+	private static HBox grudInvitados2b(GridPane panel) {
+		HBox box = new HBox(15);
+		box.setAlignment(Pos.CENTER);
+		box.setFillHeight(true);
+		
+		// botones
+		Button btnAgregar = crearBotonMenu("Agregar");
+		Button btnModificar = crearBotonMenu("Modificar");
+		
+		// digo, que estos tienen prioridad al momento de ordenar
+		HBox.setHgrow(btnAgregar, Priority.ALWAYS);
+		HBox.setHgrow(btnModificar, Priority.ALWAYS);
+
+		box.getChildren().addAll(btnAgregar, btnModificar);
+
+		btnAgregar.setOnAction(e -> System.out.println("Agregar"));
 		btnModificar.setOnAction(e -> System.out.println("Modificar"));
 
 		return box;
