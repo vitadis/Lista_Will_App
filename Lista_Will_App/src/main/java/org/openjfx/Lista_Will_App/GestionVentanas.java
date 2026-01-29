@@ -10,14 +10,17 @@ import java.util.Iterator;
 import clases.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 /**
  * Clase encargada exclusivamente de la construccion y gestion de ventanas y
@@ -263,15 +266,25 @@ public class GestionVentanas {
 		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
 
 		btnEliminar.setOnAction(e -> {
-			// obtengo el valor de los formularios y lo guardo
+			int indice;
 			String dni = tfDni.getText();
-			int indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
-			if (indice != -1)
-				personas.remove(indice);
+			indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
 
-			// sobreescribo sin mas a mi archivo
-			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
-			empleados1b(panel);
+			if (indice != -1) {
+				personas.remove(indice);
+				Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+				empleados1b(panel);
+
+			} else {
+				Label errorDNI = new Label("El dni no existe");
+				errorDNI.setStyle("-fx-font-size: 14px;" + "-fx-font-weight: bold;" + "-fx-text-fill: #FF0000 ;");
+				
+				errorDNI.setBackground(
+						new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+				
+				contenedor.getChildren().add(errorDNI);
+			}
+
 		});
 
 		btnCancelar.setOnAction(e -> {
@@ -286,6 +299,7 @@ public class GestionVentanas {
 
 		GridPane.setHalignment(contenedor, HPos.CENTER);
 		GridPane.setValignment(contenedor, VPos.CENTER);
+
 	}
 	// formulario de modificar, enseñara los campos que se puedan modificar
 
@@ -369,7 +383,7 @@ public class GestionVentanas {
 		botones.setAlignment(Pos.CENTER);
 		HBox.setHgrow(btnGuardar, Priority.ALWAYS);
 		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
-		
+
 		btnGuardar.setOnAction(e -> {
 			// obtengo el valor de los formularios y lo guardo
 			String dni = tfDni.getText();
@@ -381,9 +395,9 @@ public class GestionVentanas {
 			boolean activo = chkActivo.isSelected();
 			// indice
 			int indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
-			
+
 			Empleado cambiarEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, cargo, activo);
-			
+
 			personas.set(indice, cambiarEmpleado);
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
