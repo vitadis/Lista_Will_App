@@ -10,10 +10,8 @@ import java.util.Iterator;
 import clases.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -21,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import trata_excepciones.UtilFormatos;
 
 /**
  * Clase encargada exclusivamente de la construccion y gestion de ventanas y
@@ -204,10 +203,13 @@ public class GestionVentanas {
 		HBox.setHgrow(btnGuardar, Priority.ALWAYS);
 		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
 
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
 		// acciones de los botones
 		btnGuardar.setOnAction(e -> {
 			// obtengo el valor de los formularios y lo guardo
-			String dni = tfDni.getText();
+			String dni = tfDni.getText().toUpperCase();
 			String nombre = tfNombre.getText();
 			LocalDate fechaNac = dpFechaNac.getValue();
 			String email = tfEmail.getText();
@@ -216,17 +218,32 @@ public class GestionVentanas {
 			boolean activo = chkActivo.isSelected();
 
 			int indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
-			if (indice > -1) {
-				Label errorDNI = etiquetaError("AGREGA UN DNI DIFERENTE");
 
-				contenedor.getChildren().add(errorDNI);
-			} else {
-				Empleado nuevoEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, cargo, activo);
-				personas.add(nuevoEmpleado);
-				// sobreescribo sin mas a mi archivo
-				Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
-				empleados1b(panel);
+			// mensajes de error, para validar los campos
+			if (dni == "" || nombre == "" || fechaNac == null || email == "" || telefono == "" || cargo == null) {
+				etiquetaError(mensajeError, "TODOS LOS CAMPOS SON NECESARIOS");
+				return;
 			}
+			if (indice > -1) {
+				etiquetaError(mensajeError, "AGREGA UN DNI DIFERENTE");
+				return;
+			}
+			if (!UtilFormatos.dniFormato(dni)) {
+				etiquetaError(mensajeError, "El dni tiene que tener el formato NNNNNNNNL");
+				return;
+			}
+
+			if (!UtilFormatos.correoFormato(email)) {
+				etiquetaError(mensajeError, "AGREGA UN CORREO VALIDO");
+				return;
+			}
+
+			Empleado nuevoEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, cargo, activo);
+			personas.add(nuevoEmpleado);
+			// sobreescribo sin mas a mi archivo
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			empleados1b(panel);
+
 		});
 
 		btnCancelar.setOnAction(e -> {
@@ -234,7 +251,7 @@ public class GestionVentanas {
 		});
 
 		contenedor.getChildren().addAll(titulo, tfDni, tfNombre, dpFechaNac, tfEmail, tfTelefono, cbCargo, chkActivo,
-				botones);
+				botones, mensajeError);
 
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
@@ -272,9 +289,12 @@ public class GestionVentanas {
 		HBox.setHgrow(btnEliminar, Priority.ALWAYS);
 		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
 
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
 		btnEliminar.setOnAction(e -> {
 			int indice;
-			String dni = tfDni.getText();
+			String dni = tfDni.getText().toUpperCase();
 			indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
 
 			if (indice != -1) {
@@ -283,8 +303,8 @@ public class GestionVentanas {
 				empleados1b(panel);
 
 			} else {
-				Label errorDNI = etiquetaError("EL DNI NO EXISTE");
-				contenedor.getChildren().add(errorDNI);
+				etiquetaError(mensajeError, "EL DNI NO EXISTE");
+				return;
 			}
 
 		});
@@ -293,7 +313,7 @@ public class GestionVentanas {
 			empleados1b(panel);
 		});
 
-		contenedor.getChildren().addAll(titulo, tfDni, botones);
+		contenedor.getChildren().addAll(titulo, tfDni, botones, mensajeError);
 
 		eliminarElementoGrid(1, 0, panel);
 
@@ -331,23 +351,26 @@ public class GestionVentanas {
 		HBox.setHgrow(btnModificar, Priority.ALWAYS);
 		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
 
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
 		btnModificar.setOnAction(e -> {
 			int indice;
-			String dni = tfDni.getText();
+			String dni = tfDni.getText().toUpperCase();
 			indice = Gestionar_Ficheros.indiceALPEEmpleado(personas, dni);
 
 			if (indice != -1) {
 				formModiEmpTrue(panel, tfDni);
 			} else {
-				Label errorDNI = etiquetaError("EL DNI NO EXISTE");
-				contenedor.getChildren().add(errorDNI);
+				etiquetaError(mensajeError, "EL DNI NO EXISTE");
+				return;
 			}
 
 		});
 
 		btnCancelar.setOnAction(e -> empleados1b(panel));
 
-		contenedor.getChildren().addAll(titulo, tfDni, botones);
+		contenedor.getChildren().addAll(titulo, tfDni, botones, mensajeError);
 
 		eliminarElementoGrid(1, 0, panel);
 
@@ -499,15 +522,12 @@ public class GestionVentanas {
 		l.setStyle("-fx-text-fill:" + COLOR_DARK + ";" + "-fx-font-size:20px;" + "-fx-font-weight:900;");
 		return l;
 	}
-	
-	// etiqueta de error del dni
-	private static Label etiquetaError(String mensaje) {
-		Label error = new Label(mensaje);
-		error.setStyle("-fx-font-size: 14px;" + "-fx-font-weight: bold;" + "-fx-text-fill: #FF0000 ;");
 
-		error.setBackground(
-				new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-		return error;
+	// etiqueta de error del dni
+	private static void etiquetaError(Label etiqueta, String mensaje) {
+		etiqueta.setText("¡¡¡"+mensaje+"!!!");
+		etiqueta.setStyle("-fx-text-fill: #D32F2F;"+ "-fx-font-weight: bold;");
+		etiqueta.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
 	private static <T> TableColumn<T, String> crearColumna(String titulo, String atri, double width) {

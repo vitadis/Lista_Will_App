@@ -2,6 +2,7 @@ package org.openjfx.Lista_Will_App;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
 import java.util.Optional;
 
 import javafx.application.Application;
@@ -15,6 +16,9 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
+	// Archivos de secciones
+	final static File SECCION = new File("Secciones.dat");
+	
 	// tamaño de la ventana
 	final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	final int WIDTH = screenSize.width;
@@ -44,7 +48,7 @@ public class App extends Application {
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Confirmación");
 		alert.setHeaderText("Cerrar aplicación");
-		alert.setContentText("¿Quieres salir?");
+		alert.setContentText("¿Quieres salir de la isla de Willgo?");
 
 		// creo un valor opcional, donde le pido el siguiente metodo, retorna el tipo
 		// del boton
@@ -56,6 +60,7 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
+		Gestionar_Ficheros.sobreEscribirSec(SECCION);
 		launch();
 	}
 
