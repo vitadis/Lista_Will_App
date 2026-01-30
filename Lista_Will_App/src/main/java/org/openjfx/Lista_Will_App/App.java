@@ -27,7 +27,7 @@ public class App extends Application {
 	@Override
 	public void start(@SuppressWarnings("exports") Stage stage) {
 		// agrego el panel 2
-		var panel2 = GestionVentanas.panel2();
+		var panel2 = GestionPanel2.panel2();
 		var scene = new Scene(panel2, WIDTH, HEIGHT);
 
 		// e.- Es el parametro del evento 
@@ -60,6 +60,9 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
+		
+		
+		
 		Gestionar_Ficheros.sobreEscribirSec(SECCION);
 		launch();
 	}

@@ -95,6 +95,7 @@ public class Gestionar_Ficheros {
 			System.out.println("Error de escritura: " + e.getMessage());
 		}
 	}
+	// secciones
 
 	// --------COMPROBAR EXISTENCIA DEL ARRAYLIST---------
 	@SuppressWarnings("exports")
