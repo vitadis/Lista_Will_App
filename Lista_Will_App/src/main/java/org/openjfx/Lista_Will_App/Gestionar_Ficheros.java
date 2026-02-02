@@ -183,6 +183,18 @@ public class Gestionar_Ficheros {
 		}
 		return -1;
 	}
+	
+	@SuppressWarnings("exports")
+	public static int indiceALPInvitado(ArrayList<Persona> lista, String dni) {
+		int indice = 0;
+		for (Persona p : lista) {
+			if (p instanceof Invitado && dni.equalsIgnoreCase(p.getDni())) {
+				return indice;
+			}
+			indice++;
+		}
+		return -1;
+	}
 
 	// comprobar existencia de los administradores
 

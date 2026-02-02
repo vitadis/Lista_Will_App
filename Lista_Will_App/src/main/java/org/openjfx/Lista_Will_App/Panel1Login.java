@@ -18,6 +18,7 @@ public class Panel1Login {
 	
 	private static final File PERSONAS_FILE = new File("Persona.dat");
 	
+	@SuppressWarnings("exports")
 	public static VBox getLoginView(Runnable onLoginSuccess) {
 		VBox vbox = new VBox(20);
 		vbox.setPadding(new Insets(50));

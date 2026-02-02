@@ -161,8 +161,7 @@ public class GestionPanel2 {
 
 	// --------FORMULARIOS--------
 	// formulario agregar
-	@SuppressWarnings("exports")
-	public static void formAgregarEmpleados(GridPane panel) {
+	private static void formAgregarEmpleados(GridPane panel) {
 
 		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
 
@@ -273,8 +272,7 @@ public class GestionPanel2 {
 	}
 
 	// formulario eliminar un trabajador segun su dni
-	@SuppressWarnings("exports")
-	public static void formEliminarEmpleados(GridPane panel) {
+	private static void formEliminarEmpleados(GridPane panel) {
 
 		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
 
@@ -341,8 +339,7 @@ public class GestionPanel2 {
 	}
 	// formulario de modificar, enseñara los campos que se puedan modificar
 
-	@SuppressWarnings("exports")
-	public static void formModificarEmpleados(GridPane panel) {
+	private static void formModificarEmpleados(GridPane panel) {
 		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
 
 		VBox contenedor = new VBox(15);
@@ -398,8 +395,7 @@ public class GestionPanel2 {
 	}
 
 	// subformulario
-	@SuppressWarnings("exports")
-	public static void formModiEmpTrue(GridPane panel, TextField tfDni) {
+	private static void formModiEmpTrue(GridPane panel, TextField tfDni) {
 		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
 		VBox contenedor = new VBox(15);
 		contenedor.setPadding(new Insets(20));
@@ -496,6 +492,262 @@ public class GestionPanel2 {
 		GridPane.setValignment(contenedor, VPos.CENTER);
 
 	}
+	// formulario de Invitados
+
+	private static void formAgregarInvitados(GridPane panel) {
+		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(600, 500);
+
+		contenedor.setStyle("-fx-background-color: " + FONDO_TRANSPARENTE + ";" + "-fx-background-radius: 10;"
+				+ "-fx-border-radius: 10;");
+
+		Label titulo = new Label("AGREGAR INVITADO");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		TextField tfDni = new TextField();
+		tfDni.setPromptText("DNI");
+
+		TextField tfNombre = new TextField();
+		tfNombre.setPromptText("Nombre");
+
+		DatePicker dpFechaNac = new DatePicker();
+		dpFechaNac.setPromptText("Fecha de nacimiento");
+
+		TextField tfEmail = new TextField();
+		tfEmail.setPromptText("Email");
+
+		TextField tfTelefono = new TextField();
+		tfTelefono.setPromptText("Teléfono");
+
+		ComboBox<TipoInvitado> cbTipInv = new ComboBox<>();
+		cbTipInv.getItems().addAll(TipoInvitado.values());
+		cbTipInv.setPromptText("Tipo de invitado");
+
+		Button btnGuardar = crearBotonMenu("Guardar", "rgba(0, 128, 0, 0.7)", "rgba(0, 200, 0, 0.7)");
+		Button btnCancelar = crearBotonMenu("Cancelar", "rgba(255, 0, 0, 0.5)", "rgba(255, 50, 50, 0.7)");
+
+		HBox botones = new HBox(10, btnGuardar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnGuardar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
+
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
+		// acciones de los botones
+		btnGuardar.setOnAction(e -> {
+			// obtengo el valor de los formularios y lo guardo
+			String dni = tfDni.getText().toUpperCase();
+			String nombre = tfNombre.getText();
+			LocalDate fechaNac = dpFechaNac.getValue();
+			String email = tfEmail.getText();
+			String telefono = tfTelefono.getText();
+			TipoInvitado tipInvitado = cbTipInv.getValue();
+			ArrayList<Asistencia> asistencia = new ArrayList<Asistencia>();
+
+			int indice = Gestionar_Ficheros.indiceALPInvitado(personas, dni);
+
+			// mensajes de error, para validar los campos
+			if (dni == "" || nombre == "" || fechaNac == null || email == "" || telefono == "" || tipInvitado == null) {
+				etiquetaError(mensajeError, "TODOS LOS CAMPOS SON NECESARIOS");
+				return;
+			}
+			if (indice > -1) {
+				etiquetaError(mensajeError, "AGREGA UN DNI DIFERENTE");
+				return;
+			}
+			if (!UtilFormatos.dniFormato(dni)) {
+				etiquetaError(mensajeError, "El dni tiene que tener el formato NNNNNNNNL");
+				return;
+			}
+
+			if (!UtilFormatos.correoFormato(email)) {
+				etiquetaError(mensajeError, "AGREGA UN CORREO VALIDO");
+				return;
+			}
+			if (!UtilFormatos.formatoNumero(telefono)) {
+				etiquetaError(mensajeError, "AGREGA UN NUMERO VALIDO DE 9 DIG.");
+				return;
+			}
+			if (!UtilFormatos.mayorDeEdad(fechaNac)) {
+				etiquetaError(mensajeError, "TIENES QUE SER MAYOR DE 16");
+				return;
+			}
+
+			Invitado nuevoInvitado = new Invitado(dni, nombre, fechaNac, email, telefono, tipInvitado, asistencia);
+			personas.add(nuevoInvitado);
+			// sobreescribo sin mas a mi archivo
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			invitados2b(panel);
+
+		});
+
+		btnCancelar.setOnAction(e -> {
+			invitados2b(panel);
+		});
+
+		contenedor.getChildren().addAll(titulo, tfDni, tfNombre, dpFechaNac, tfEmail, tfTelefono, cbTipInv, botones,
+				mensajeError);
+
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
+	}
+
+	public static void formModiInvitado(GridPane panel) {
+		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(600, 500);
+
+		contenedor.setStyle("-fx-background-color: " + FONDO_TRANSPARENTE + ";" + "-fx-background-radius: 10;"
+				+ "-fx-border-radius: 10;");
+
+		Label titulo = new Label("MODIFICAR INVITADO");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		TextField tfDni = new TextField();
+		tfDni.setPromptText("DNI");
+
+		Button btnModificar = crearBotonMenu("Modificar", "rgba(0, 128, 0, 0.7)", "rgba(0, 200, 0, 0.7)");
+		Button btnCancelar = crearBotonMenu("Cancelar", "rgba(255, 0, 0, 0.5)", "rgba(255, 50, 50, 0.7)");
+
+		HBox botones = new HBox(10, btnModificar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnModificar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
+
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
+		btnModificar.setOnAction(e -> {
+			int indice;
+			String dni = tfDni.getText().toUpperCase();
+			indice = Gestionar_Ficheros.indiceALPInvitado(personas, dni);
+
+			if (indice != -1) {
+				formAgregarInvTrue(panel, dni);
+			} else {
+				etiquetaError(mensajeError, "EL DNI NO EXISTE");
+				return;
+			}
+
+		});
+		
+		btnCancelar.setOnAction(e -> invitados2b(panel));
+
+		contenedor.getChildren().addAll(titulo, tfDni, botones, mensajeError);
+
+		eliminarElementoGrid(1, 0, panel);
+
+		panel.add(contenedor, 1, 0);
+
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
+	}
+
+	public static void formAgregarInvTrue(GridPane panel,String dni) {
+		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(600, 500);
+
+		contenedor.setStyle("-fx-background-color: " + FONDO_TRANSPARENTE + ";" + "-fx-background-radius: 10;"
+				+ "-fx-border-radius: 10;");
+
+		Label titulo = new Label("AGREGAR INVITADO");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		TextField tfNombre = new TextField();
+		tfNombre.setPromptText("Nombre");
+
+		DatePicker dpFechaNac = new DatePicker();
+		dpFechaNac.setPromptText("Fecha de nacimiento");
+
+		TextField tfEmail = new TextField();
+		tfEmail.setPromptText("Email");
+
+		TextField tfTelefono = new TextField();
+		tfTelefono.setPromptText("Teléfono");
+
+		ComboBox<TipoInvitado> cbTipInv = new ComboBox<>();
+		cbTipInv.getItems().addAll(TipoInvitado.values());
+		cbTipInv.setPromptText("Tipo de invitado");
+
+		Button btnGuardar = crearBotonMenu("Guardar", "rgba(0, 128, 0, 0.7)", "rgba(0, 200, 0, 0.7)");
+		Button btnCancelar = crearBotonMenu("Cancelar", "rgba(255, 0, 0, 0.5)", "rgba(255, 50, 50, 0.7)");
+
+		HBox botones = new HBox(10, btnGuardar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnGuardar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
+
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
+		// acciones de los botones
+		btnGuardar.setOnAction(e -> {
+			// obtengo el valor de los formularios y lo guardo
+			String nombre = tfNombre.getText();
+			LocalDate fechaNac = dpFechaNac.getValue();
+			String email = tfEmail.getText();
+			String telefono = tfTelefono.getText();
+			TipoInvitado tipInvitado = cbTipInv.getValue();
+			ArrayList<Asistencia> asistencia = new ArrayList<Asistencia>();
+
+			int indice = Gestionar_Ficheros.indiceALPInvitado(personas, dni);
+
+			// mensajes de error, para validar los campos
+			if (nombre == "" || fechaNac == null || email == "" || telefono == "" || tipInvitado == null) {
+				etiquetaError(mensajeError, "TODOS LOS CAMPOS SON NECESARIOS");
+				return;
+			}
+
+			if (!UtilFormatos.correoFormato(email)) {
+				etiquetaError(mensajeError, "AGREGA UN CORREO VALIDO");
+				return;
+			}
+			if (!UtilFormatos.formatoNumero(telefono)) {
+				etiquetaError(mensajeError, "AGREGA UN NUMERO VALIDO DE 9 DIG.");
+				return;
+			}
+			if (!UtilFormatos.mayorDeEdad(fechaNac)) {
+				etiquetaError(mensajeError, "TIENES QUE SER MAYOR DE 16");
+				return;
+			}
+
+			Invitado nuevoInvitado = new Invitado(dni, nombre, fechaNac, email, telefono, tipInvitado, asistencia);
+			personas.set(indice,nuevoInvitado);
+			// sobreescribo sin mas a mi archivo
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			invitados2b(panel);
+
+		});
+
+		btnCancelar.setOnAction(e -> {
+			invitados2b(panel);
+		});
+
+		contenedor.getChildren().addAll(titulo, tfNombre, dpFechaNac, tfEmail, tfTelefono, cbTipInv, botones,
+				mensajeError);
+
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
+
+	}
 
 	// Controles, basicamente los botones
 	private static HBox grudEmpleados2b(GridPane panel) {
@@ -537,8 +789,8 @@ public class GestionPanel2 {
 
 		box.getChildren().addAll(btnAgregar, btnModificar);
 
-		btnAgregar.setOnAction(e -> System.out.println("Agregar"));
-		btnModificar.setOnAction(e -> System.out.println("Modificar"));
+		btnAgregar.setOnAction(e -> formAgregarInvitados(panel));
+		btnModificar.setOnAction(e -> formModiInvitado(panel));
 
 		return box;
 	}

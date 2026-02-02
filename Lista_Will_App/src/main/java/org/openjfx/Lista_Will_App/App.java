@@ -33,6 +33,8 @@ public class App extends Application {
 			stage.setScene(new Scene(GestionPanel2.panel2(), WIDTH, HEIGHT));
 
 		}), WIDTH, HEIGHT);
+		
+		//var loginScene = new Scene(GestionPanel2.panel2(), WIDTH, HEIGHT);
 
 		// e.- Es el parametro del evento
 		stage.setOnCloseRequest(e -> {
