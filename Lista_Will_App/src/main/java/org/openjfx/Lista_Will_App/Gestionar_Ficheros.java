@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import clases.*;
@@ -78,8 +79,10 @@ public class Gestionar_Ficheros {
 		}
 	}
 
+
 	// sobreescribir secciones
-	public static void sobreEscribirSec(File archivo) {
+	public static void sobreEscribirSec() {
+		File archivo = new File("Secciones.dat");
 		ArrayList<Seccion> secciones = new ArrayList<Seccion>();
 		secciones.add(new Seccion("BUCEO", "buceo.com"));
 		secciones.add(new Seccion("BICICLETA", "bicicleta.com"));
@@ -95,7 +98,78 @@ public class Gestionar_Ficheros {
 			System.out.println("Error de escritura: " + e.getMessage());
 		}
 	}
-	// secciones
+
+	public static void inicializarDatos() {
+		File filePer = new File("Persona.dat");
+
+		ArrayList<Persona> personas = new ArrayList<>();
+
+		// Crear empleado administrador
+		Empleado admin = new Empleado("11111111A", "admin", LocalDate.of(1990, 1, 1), "admin@listawill.com",
+				"688788883", Cargo.ADMINISTRADOR, true, "admin123");
+		personas.add(admin);
+
+		// Crear otro empleado administrador
+		Empleado admin2 = new Empleado("22222222B", "Will", LocalDate.of(1985, 5, 15), "will@listawill.com",
+				"632726578", Cargo.ADMINISTRADOR, true, "will2026");
+		personas.add(admin2);
+
+		Empleado admin3 = new Empleado("12121212S", "P Diddy", LocalDate.of(1969, 11, 4), "Diddy@listawill.com",
+				"614597843", Cargo.ADMINISTRADOR, true, "Diddy2026");
+		personas.add(admin3);
+
+		// Crear algunos invitados de prueba con asistencias
+		ArrayList<Asistencia> asistencias1 = new ArrayList<>();
+		ArrayList<String> secciones1 = new ArrayList<>();
+		secciones1.add("BUCEO");
+		secciones1.add("BICICLETA");
+		asistencias1.add(new Asistencia("AST001", LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 15), 5, secciones1));
+
+		Invitado inv1 = new Invitado("12345678A", "Juan Pérez García", LocalDate.of(1995, 3, 20),
+				"juan.perez@example.com", "666123456", TipoInvitado.VIP, asistencias1);
+		personas.add(inv1);
+
+		// Invitado con múltiples asistencias
+		ArrayList<Asistencia> asistencias2 = new ArrayList<>();
+		ArrayList<String> secciones2 = new ArrayList<>();
+		secciones2.add("PARACAIDAS");
+		asistencias2.add(new Asistencia("AST002", LocalDate.of(2024, 7, 10), LocalDate.of(2024, 7, 20), 4, secciones2));
+
+		ArrayList<String> secciones3 = new ArrayList<>();
+		secciones3.add("FIESTA-JOVEN");
+		asistencias2.add(new Asistencia("AST003", LocalDate.of(2024, 12, 1), LocalDate.of(2024, 12, 5), 5, secciones3));
+
+		Invitado inv2 = new Invitado("87654321B", "María López Martínez", LocalDate.of(1992, 8, 15),
+				"maria.lopez@example.com", "666987654", TipoInvitado.TRIPLE_VIP, asistencias2);
+		personas.add(inv2);
+
+		// Invitado sin asistencias
+		Invitado inv3 = new Invitado("11223344C", "Carlos Rodríguez Sánchez", LocalDate.of(1998, 11, 30),
+				"carlos.rodriguez@example.com", "666456789", TipoInvitado.TRIPLE_VIP, new ArrayList<Asistencia>());
+		personas.add(inv3);
+
+		// Invitado VIP con asistencia reciente
+		ArrayList<Asistencia> asistencias4 = new ArrayList<>();
+		ArrayList<String> secciones4 = new ArrayList<>();
+		secciones4.add("BUCEO");
+		secciones4.add("BICICLETA");
+		secciones4.add("PARACAIDAS");
+		asistencias4.add(new Asistencia("AST004", LocalDate.of(2025, 1, 15), LocalDate.of(2025, 1, 25), 5, secciones4));
+
+		Invitado inv4 = new Invitado("99887766D", "Ana Fernández Torres", LocalDate.of(1988, 4, 12),
+				"ana.fernandez@example.com", "666321654", TipoInvitado.VIP, asistencias4);
+		personas.add(inv4);
+
+		// Guardar todos los datos
+		Gestionar_Ficheros.sobreEscribirPersona(personas, filePer);
+
+		System.out.println("Datos de prueba inicializados correctamente");
+		System.out.println("Usuarios administradores creados:");
+		System.out.println("  - Usuario: admin | Password: admin123");
+		System.out.println("  - Usuario: Will | Password: will2026");
+		System.out.println("  - Usuario: P Diddy | Password: Diddy2026");
+		System.out.println("Invitados de prueba creados: 4");
+	}
 
 	// --------COMPROBAR EXISTENCIA DEL ARRAYLIST---------
 	@SuppressWarnings("exports")
@@ -112,14 +186,13 @@ public class Gestionar_Ficheros {
 
 	// comprobar existencia de los administradores
 
-	@SuppressWarnings("exports")
 	public static boolean existeAdmin(File archivo, String nombre, String pw) {
 		ArrayList<Persona> lista = leerFicheroPersona(archivo);
-		
+
 		for (Persona p : lista) {
 			if (p instanceof Empleado) {
 				Empleado e = (Empleado) p;
-				if (e.getNombre().equalsIgnoreCase(nombre) && e.getDni().equalsIgnoreCase(pw)
+				if (e.getNombre().equalsIgnoreCase(nombre) && e.getPw().equals(pw)
 						&& e.getCargo() == Cargo.ADMINISTRADOR) {
 					return true;
 				}

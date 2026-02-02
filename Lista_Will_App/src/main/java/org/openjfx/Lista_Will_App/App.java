@@ -2,7 +2,6 @@ package org.openjfx.Lista_Will_App;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.File;
 import java.util.Optional;
 
 import javafx.application.Application;
@@ -17,31 +16,33 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 	// Archivos de secciones
-	final static File SECCION = new File("Secciones.dat");
-	
+
 	// tamaño de la ventana
 	final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	final int WIDTH = screenSize.width;
 	final int HEIGHT = screenSize.height - 70;
 
 	@Override
-	public void start(@SuppressWarnings("exports") Stage stage) {
-		// agrego el panel 2
-		var panel2 = GestionPanel2.panel2();
-		//var panelLogin = Panel1Login.getLoginView();
-		var scene = new Scene(panel2, WIDTH, HEIGHT);
 
-		
-		// e.- Es el parametro del evento 
+	public void start(@SuppressWarnings("exports") Stage stage) {
+
+		// Iniciar con la pantalla de login
+
+		var loginScene = new Scene(Panel1Login.getLoginView(() -> {
+
+			stage.setScene(new Scene(GestionPanel2.panel2(), WIDTH, HEIGHT));
+
+		}), WIDTH, HEIGHT);
+
+		// e.- Es el parametro del evento
 		stage.setOnCloseRequest(e -> {
 			e.consume(); // detengo el proceso de apagar
-
 			if (confirmarSalida()) {
 				Platform.exit();
 			}
 		});
-
-		stage.setScene(scene);
+		stage.setTitle("Isla de Will - Sistema de Gestión");
+		stage.setScene(loginScene);
 		stage.show();
 	}
 
@@ -62,10 +63,9 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
-		
-		
-		
-		Gestionar_Ficheros.sobreEscribirSec(SECCION);
+
+		Gestionar_Ficheros.sobreEscribirSec();
+		Gestionar_Ficheros.inicializarDatos();
 		launch();
 	}
 

@@ -1,9 +1,14 @@
 package clases;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Asistencia {
+public class Asistencia implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String codigo;
 	private LocalDate fechaIni;
 	private LocalDate fechaFin;
