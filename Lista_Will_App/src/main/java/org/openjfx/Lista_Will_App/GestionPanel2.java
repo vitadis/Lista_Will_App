@@ -19,7 +19,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import trata_excepciones.UtilFormatos;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -34,9 +33,6 @@ public class GestionPanel2 {
 
 	// Paleta de colores
 	// private static final String COLOR_PRIMARY = "#1565C0";
-	private static final String COLOR_SECONDARY = "#1976D2";
-	private static final String COLOR_LIGHT = "#42A5F5";
-	private static final String COLOR_DARK = "#0D47A1";
 	private static final String FONDO_TRANSPARENTE = "rgba(135, 206, 235, 0.3)";
 
 	// Dimensiones de pantalla
