@@ -31,11 +31,10 @@ public class Invitado extends Persona{
 	public void setAsistencia(ArrayList<Asistencia> asistencia) {
 		this.asistencia = asistencia;
 	}
-	@Override
-	public int calcularEdad() {
-		return 0;
-	}
 	
+	public  String tipoPersona() {
+		return "Invitado";
+	}
 	
 	@Override
 	public String toString() {

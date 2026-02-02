@@ -110,4 +110,22 @@ public class Gestionar_Ficheros {
 		return -1;
 	}
 
+	// comprobar existencia de los administradores
+
+	@SuppressWarnings("exports")
+	public static boolean existeAdmin(File archivo, String nombre, String pw) {
+		ArrayList<Persona> lista = leerFicheroPersona(archivo);
+		
+		for (Persona p : lista) {
+			if (p instanceof Empleado) {
+				Empleado e = (Empleado) p;
+				if (e.getNombre().equalsIgnoreCase(nombre) && e.getDni().equalsIgnoreCase(pw)
+						&& e.getCargo() == Cargo.ADMINISTRADOR) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }

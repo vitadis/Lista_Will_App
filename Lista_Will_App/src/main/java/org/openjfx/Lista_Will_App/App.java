@@ -28,8 +28,10 @@ public class App extends Application {
 	public void start(@SuppressWarnings("exports") Stage stage) {
 		// agrego el panel 2
 		var panel2 = GestionPanel2.panel2();
+		//var panelLogin = Panel1Login.getLoginView();
 		var scene = new Scene(panel2, WIDTH, HEIGHT);
 
+		
 		// e.- Es el parametro del evento 
 		stage.setOnCloseRequest(e -> {
 			e.consume(); // detengo el proceso de apagar

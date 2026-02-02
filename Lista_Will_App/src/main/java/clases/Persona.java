@@ -2,6 +2,7 @@ package clases;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Period;
 
 public abstract class Persona implements Serializable {
 
@@ -69,6 +70,10 @@ public abstract class Persona implements Serializable {
 				+ ", telefono=" + telefono + "]";
 	}
 
-	public abstract int calcularEdad();
+	public int calcularEdad() {
+		return Period.between(fechaNac, LocalDate.now()).getYears();
+	}
+	
+	public abstract String tipoPersona();
 
 }

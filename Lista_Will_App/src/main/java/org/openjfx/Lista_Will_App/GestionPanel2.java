@@ -398,6 +398,7 @@ public class GestionPanel2 {
 	}
 
 	// subformulario
+	@SuppressWarnings("exports")
 	public static void formModiEmpTrue(GridPane panel, TextField tfDni) {
 		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
 		VBox contenedor = new VBox(15);
