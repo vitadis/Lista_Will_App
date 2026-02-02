@@ -94,6 +94,20 @@ public class GestionPanel2 {
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
 	}
+	
+	//  boton 3, despues de validar el dni
+	private static void gestionAsistencia3b(GridPane panel, Invitado invitado) {
+		VBox contenedor = new VBox(15);
+		contenedor.setAlignment(Pos.CENTER);
+		contenedor.setPadding(new Insets(20));
+
+		Label titulo = crearTitulo("TABLA DE ASISTENCIA DE "+ invitado.getDni());
+
+		contenedor.getChildren().addAll(titulo, tablaAsistencia(invitado),grudAsistencia3b(panel));
+
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+	}
 
 	// Panel izquierdo (El menu de opciones)
 	private static VBox parteIzqP2(GridPane panel) {
@@ -113,7 +127,7 @@ public class GestionPanel2 {
 
 		b1.setOnAction(e -> empleados1b(panel));
 		b2.setOnAction(e -> invitados2b(panel));
-		b3.setOnAction(e -> System.out.println("Asistencia"));
+		b3.setOnAction(e -> formGestionAsistencia(panel));
 		b4.setOnAction(e -> System.out.println("Filtrado"));
 		b5.setOnAction(e -> {
 			if (App.confirmarSalida())
@@ -156,6 +170,23 @@ public class GestionPanel2 {
 				crearColumna("Fecha", "fechaNac", w), crearColumna("Email", "email", w),
 				crearColumna("Telefono", "telefono", w), crearColumna("Tipo de invitado", "tipo", w));
 
+		return table;
+	}
+
+	// tabla para mostrar las asistencias de la persona
+	@SuppressWarnings({ "unchecked" })
+	private static TableView<Asistencia> tablaAsistencia(Invitado invitado) {
+		ArrayList<Asistencia> asistencia = invitado.getAsistencia();
+
+		TableView<Asistencia> table = new TableView<>();
+		estiloTabla(table);
+		table.setItems(FXCollections.observableArrayList(asistencia));
+
+		double w = (WIDTH * 0.8 - 40) / 5;
+
+		table.getColumns().addAll(crearColumna("COD", "codigo", w), crearColumna("FechaInicio", "fechaIni", w),
+				crearColumna("FechaFin", "fechaFin", w), crearColumna("Secciones", "codSecciones", w),
+				crearColumna("Valoracion", "valoracion", w));
 		return table;
 	}
 
@@ -600,7 +631,7 @@ public class GestionPanel2 {
 		GridPane.setValignment(contenedor, VPos.CENTER);
 	}
 
-	public static void formModiInvitado(GridPane panel) {
+	private static void formModiInvitado(GridPane panel) {
 		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
 
 		VBox contenedor = new VBox(15);
@@ -641,7 +672,7 @@ public class GestionPanel2 {
 			}
 
 		});
-		
+
 		btnCancelar.setOnAction(e -> invitados2b(panel));
 
 		contenedor.getChildren().addAll(titulo, tfDni, botones, mensajeError);
@@ -654,7 +685,7 @@ public class GestionPanel2 {
 		GridPane.setValignment(contenedor, VPos.CENTER);
 	}
 
-	public static void formAgregarInvTrue(GridPane panel,String dni) {
+	private static void formAgregarInvTrue(GridPane panel, String dni) {
 		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
 
 		VBox contenedor = new VBox(15);
@@ -727,7 +758,7 @@ public class GestionPanel2 {
 			}
 
 			Invitado nuevoInvitado = new Invitado(dni, nombre, fechaNac, email, telefono, tipInvitado, asistencia);
-			personas.set(indice,nuevoInvitado);
+			personas.set(indice, nuevoInvitado);
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
 			invitados2b(panel);
@@ -746,7 +777,60 @@ public class GestionPanel2 {
 
 		GridPane.setHalignment(contenedor, HPos.CENTER);
 		GridPane.setValignment(contenedor, VPos.CENTER);
+	}
 
+	// FORMULARIOS PARA GESTION DE ASISTENCIA
+	// formulario principal
+	// formulario principal para gestionar asistencia
+	private static void formGestionAsistencia(GridPane panel) {
+		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(600, 500);
+
+		contenedor.setStyle("-fx-background-color: " + FONDO_TRANSPARENTE + ";" + "-fx-background-radius: 10;"
+				+ "-fx-border-radius: 10;");
+
+		Label titulo = new Label("GESTIONAR ASISTENCIA DE INVITADO");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		TextField tfDni = new TextField();
+		tfDni.setPromptText("DNI");
+
+		Button BtnBuscarAsistencia = crearBotonMenu("Buscar", "rgba(0, 128, 0, 0.7)", "rgba(0, 200, 0, 0.7)");
+
+		HBox botones = new HBox(10, BtnBuscarAsistencia);
+		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(BtnBuscarAsistencia, Priority.ALWAYS);
+
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
+		// llamar si existe el dni sin mas
+		BtnBuscarAsistencia.setOnAction(e -> {
+			int indice;
+			String dni = tfDni.getText().toUpperCase();
+			indice = Gestionar_Ficheros.indiceALPInvitado(personas, dni);
+
+			if (indice != -1) {
+				gestionAsistencia3b(panel,(Invitado) personas.get(indice));
+			} else {
+				etiquetaError(mensajeError, "EL DNI NO EXISTE");
+				return;
+			}
+
+		});
+
+		contenedor.getChildren().addAll(titulo, tfDni, botones, mensajeError);
+
+		eliminarElementoGrid(1, 0, panel);
+
+		panel.add(contenedor, 1, 0);
+
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
 	}
 
 	// Controles, basicamente los botones
@@ -791,6 +875,27 @@ public class GestionPanel2 {
 
 		btnAgregar.setOnAction(e -> formAgregarInvitados(panel));
 		btnModificar.setOnAction(e -> formModiInvitado(panel));
+
+		return box;
+	}
+	
+	private static HBox grudAsistencia3b(GridPane panel) {
+		HBox box = new HBox(15);
+		box.setAlignment(Pos.CENTER);
+		box.setFillHeight(true);
+
+		// botones
+		Button btnAgregar = crearBotonMenu("Agregar", "rgba(0, 128, 0, 0.7)", "rgba(0, 200, 0, 0.7)");
+		Button btnModificar = crearBotonMenu("Modificar", "rgba(0, 123, 255, 0.8)", "rgba(0, 153, 255, 1);");
+
+		// digo, que estos tienen prioridad al momento de ordenar
+		HBox.setHgrow(btnAgregar, Priority.ALWAYS);
+		HBox.setHgrow(btnModificar, Priority.ALWAYS);
+
+		box.getChildren().addAll(btnAgregar, btnModificar);
+
+		btnAgregar.setOnAction(e -> System.out.println("AGREGA AQUI LA FUNCION PARA AGREGAR"));
+		btnModificar.setOnAction(e -> System.out.println("AGREGA AQUI LA FUNCION PARA MODIFICAR"));
 
 		return box;
 	}

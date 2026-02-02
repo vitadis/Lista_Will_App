@@ -28,13 +28,13 @@ public class App extends Application {
 
 		// Iniciar con la pantalla de login
 
-		var loginScene = new Scene(Panel1Login.getLoginView(() -> {
+		/*var loginScene = new Scene(Panel1Login.getLoginView(() -> {
 
 			stage.setScene(new Scene(GestionPanel2.panel2(), WIDTH, HEIGHT));
 
-		}), WIDTH, HEIGHT);
+		}), WIDTH, HEIGHT);*/
 		
-		//var loginScene = new Scene(GestionPanel2.panel2(), WIDTH, HEIGHT);
+		var loginScene = new Scene(GestionPanel2.panel2(), WIDTH, HEIGHT);
 
 		// e.- Es el parametro del evento
 		stage.setOnCloseRequest(e -> {
