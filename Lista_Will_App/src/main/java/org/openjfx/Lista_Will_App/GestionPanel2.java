@@ -20,8 +20,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import trata_excepciones.UtilFormatos;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 
 /**
  * Clase encargada exclusivamente de la construccion y gestion de ventanas y
@@ -42,7 +40,8 @@ public class GestionPanel2 {
 
 	// Archivos
 	private static final File PERSONA = new File("persona.dat");
-
+	private static final File PERSONA_AUX = new File("persona.tmp");
+	
 	// -------VISTAS PRINCIPALES-------
 	@SuppressWarnings("exports")
 	public static GridPane panel2() {
@@ -296,8 +295,12 @@ public class GestionPanel2 {
 			Empleado nuevoEmpleado = new Empleado(dni, nombre, fechaNac, email, telefono, cargo, activo);
 			personas.add(nuevoEmpleado);
 			// sobreescribo sin mas a mi archivo
-			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
+			
+			if (mensaje!=null)
+				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
+			
 			empleados1b(panel);
 
 		});
@@ -358,9 +361,12 @@ public class GestionPanel2 {
 
 			if (indice != -1) {
 				personas.remove(indice);
-				Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+				Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 				String mensaje = Gestionar_Ficheros.actualizarPersonas();
-
+				
+				if (mensaje!=null)
+					mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
+				
 				empleados1b(panel);
 
 			} else {
@@ -521,8 +527,11 @@ public class GestionPanel2 {
 
 			personas.set(indice, cambiarEmpleado);
 			// sobreescribo sin mas a mi archivo
-			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
+			
+			if (mensaje!=null)
+				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
 
 			empleados1b(panel);
 		});
@@ -630,8 +639,11 @@ public class GestionPanel2 {
 			Invitado nuevoInvitado = new Invitado(dni, nombre, fechaNac, email, telefono, tipInvitado, asistencia);
 			personas.add(nuevoInvitado);
 			// sobreescribo sin mas a mi archivo
-			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
+			
+			if (mensaje!=null)
+				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
 
 			invitados2b(panel);
 
@@ -783,6 +795,9 @@ public class GestionPanel2 {
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
 
+			if (mensaje!=null)
+				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
+			
 			invitados2b(panel);
 
 		});
@@ -968,8 +983,10 @@ public class GestionPanel2 {
 			// Actualizar en el archivo
 			int indice = Gestionar_Ficheros.indiceALPInvitado(personas, invitado.getDni());
 			personas.set(indice, invitado);
-			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
+			if (mensaje!=null)
+				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
 
 
 			// Volver a la vista de gestión de asistencia
@@ -1292,7 +1309,16 @@ public class GestionPanel2 {
 				"-fx-text-fill: #D32F2F;" + "-fx-font-weight: bold;" + "-fx-background-color: rgba(255, 255, 0, 0.3);"
 						+ "-fx-background-radius: 10;" + "-fx-padding: 8 12 8 12;" + "-fx-alignment: center;");
 	}
-
+	
+	// alerta error
+	private static void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
+		Alert alert = new Alert(tipo);
+		alert.setTitle(titulo);
+		alert.setHeaderText(null);
+		alert.setContentText(mensaje);
+		alert.showAndWait();
+	}
+	
 	private static <T> TableColumn<T, String> crearColumna(String titulo, String atri, double width) {
 		// T es una variable generica de cualquier clase
 		TableColumn<T, String> col = new TableColumn<>(titulo);

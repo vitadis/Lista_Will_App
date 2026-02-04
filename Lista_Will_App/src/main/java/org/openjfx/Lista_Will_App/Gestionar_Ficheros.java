@@ -250,9 +250,9 @@ public class Gestionar_Ficheros {
 
 	// gestionar ficheros
 	public static String actualizarPersonas() {
-		File fOriginal = new File("personas.dat");
-		File fAuxiliar = new File("personas.tmp");
-		File fBackup = new File("personas.bak");
+		File fOriginal = new File("persona.dat");
+		File fAuxiliar = new File("persona.tmp");
+		File fBackup = new File("persona.bak");
 
 		// Proceso de sustitución y backup
 		if (fOriginal.exists()) {
