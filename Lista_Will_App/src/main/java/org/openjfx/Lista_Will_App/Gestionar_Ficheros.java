@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 
 import clases.*;
@@ -197,7 +198,6 @@ public class Gestionar_Ficheros {
 	}
 
 	// comprobar existencia de los administradores
-
 	public static boolean existeAdmin(File archivo, String nombre, String pw) {
 		ArrayList<Persona> lista = leerFicheroPersona(archivo);
 
@@ -213,4 +213,38 @@ public class Gestionar_Ficheros {
 		return false;
 	}
 
+	// aplicar filtros
+	@SuppressWarnings("exports")
+	public static ArrayList<Invitado> filtrarInvitadosPorEdad(ArrayList<Invitado> lista, int edadMinima) {
+	   ArrayList<Invitado> filtrados = new ArrayList<>();
+
+	   for (Invitado i : lista) {
+	       int edad = calcularEdad(i.getFechaNac());
+	       if (edad >= edadMinima) {
+	           filtrados.add(i);
+	       }
+	   }
+	   return filtrados;
+	}
+
+	public static int calcularEdad(LocalDate fechaNac) {
+	   return Period.between(fechaNac, LocalDate.now()).getYears();
+	}
+
+	@SuppressWarnings("exports")
+	public static ArrayList<Invitado> filtrarInvitadosEntreFechas(ArrayList<Invitado> lista, LocalDate fechaInicio, LocalDate fechaFin) {
+
+	   ArrayList<Invitado> filtrados = new ArrayList<>();
+
+	   for (Invitado i : lista) {
+	       LocalDate fechaNac = i.getFechaNac();
+
+	       if ((fechaNac.isEqual(fechaInicio) || fechaNac.isAfter(fechaInicio)) &&
+	           (fechaNac.isEqual(fechaFin) || fechaNac.isBefore(fechaFin))) {
+
+	           filtrados.add(i);
+	       }
+	   }
+	   return filtrados;
+	}
 }

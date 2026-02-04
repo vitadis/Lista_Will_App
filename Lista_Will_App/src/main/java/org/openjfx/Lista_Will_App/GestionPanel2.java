@@ -62,8 +62,7 @@ public class GestionPanel2 {
 	}
 
 	// boton 1 de empleados
-	@SuppressWarnings("exports")
-	public static void empleados1b(GridPane panel) {
+	private static void empleados1b(GridPane panel) {
 		ArrayList<Empleado> lista = Gestionar_Ficheros.listEmpleado(PERSONA);
 
 		VBox contenedor = new VBox(15);
@@ -79,8 +78,7 @@ public class GestionPanel2 {
 	}
 
 	// boton 2 invitados
-	@SuppressWarnings("exports")
-	public static void invitados2b(GridPane panel) {
+	private static void invitados2b(GridPane panel) {
 		ArrayList<Invitado> lista2 = Gestionar_Ficheros.listInvitado(PERSONA);
 
 		VBox contenedor = new VBox(15);
@@ -94,19 +92,34 @@ public class GestionPanel2 {
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
 	}
-	
-	//  boton 3, despues de validar el dni
+
+	// boton 3, despues de validar el dni
 	private static void gestionAsistencia3b(GridPane panel, Invitado invitado) {
 		VBox contenedor = new VBox(15);
 		contenedor.setAlignment(Pos.CENTER);
 		contenedor.setPadding(new Insets(20));
 
-		Label titulo = crearTitulo("TABLA DE ASISTENCIA DE "+ invitado.getDni());
+		Label titulo = crearTitulo("TABLA DE ASISTENCIA DE " + invitado.getDni());
 
-		contenedor.getChildren().addAll(titulo, tablaAsistencia(invitado),grudAsistencia3b(panel));
+		contenedor.getChildren().addAll(titulo, tablaAsistencia(invitado), grudAsistencia3b(panel, invitado));
 
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
+	}
+
+	// apartado de filtrado
+	private static void filtrado4b(GridPane panel) {
+
+		VBox contenedor = new VBox(15);
+		contenedor.setAlignment(Pos.CENTER);
+		contenedor.setPadding(new Insets(20));
+
+		Label titulo = crearTitulo("TIPOS DE FILTRADO");
+
+		contenedor.getChildren().addAll(titulo, grudFiltrado4b(panel));
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+
 	}
 
 	// Panel izquierdo (El menu de opciones)
@@ -128,7 +141,7 @@ public class GestionPanel2 {
 		b1.setOnAction(e -> empleados1b(panel));
 		b2.setOnAction(e -> invitados2b(panel));
 		b3.setOnAction(e -> formGestionAsistencia(panel));
-		b4.setOnAction(e -> System.out.println("Filtrado"));
+		b4.setOnAction(e -> filtrado4b(panel));
 		b5.setOnAction(e -> {
 			if (App.confirmarSalida())
 				Platform.exit();
@@ -815,7 +828,7 @@ public class GestionPanel2 {
 			indice = Gestionar_Ficheros.indiceALPInvitado(personas, dni);
 
 			if (indice != -1) {
-				gestionAsistencia3b(panel,(Invitado) personas.get(indice));
+				gestionAsistencia3b(panel, (Invitado) personas.get(indice));
 			} else {
 				etiquetaError(mensajeError, "EL DNI NO EXISTE");
 				return;
@@ -831,6 +844,325 @@ public class GestionPanel2 {
 
 		GridPane.setHalignment(contenedor, HPos.CENTER);
 		GridPane.setValignment(contenedor, VPos.CENTER);
+	}
+
+	// formulario para agregar asistencia
+	private static void formAgregarAsistencia(GridPane panel, Invitado invitado) {
+		ArrayList<Persona> personas = Gestionar_Ficheros.leerFicheroPersona(PERSONA);
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(600, 550);
+
+		contenedor.setStyle("-fx-background-color: " + FONDO_TRANSPARENTE + ";" + "-fx-background-radius: 10;"
+				+ "-fx-border-radius: 10;");
+
+		Label titulo = new Label("AGREGAR ASISTENCIA");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		Label infoInvitado = new Label("Invitado: " + invitado.getNombre() + " (" + invitado.getDni() + ")");
+		infoInvitado.setStyle("-fx-font-size: 14px;" + "-fx-font-weight: bold;" + "-fx-text-fill: #2C3E50;");
+
+		TextField tfCodigo = new TextField();
+		tfCodigo.setPromptText("Código de asistencia (ej: AST005)");
+
+		DatePicker dpFechaIni = new DatePicker();
+		dpFechaIni.setPromptText("Fecha de inicio");
+
+		DatePicker dpFechaFin = new DatePicker();
+		dpFechaFin.setPromptText("Fecha de fin");
+
+		// ComboBox para valoración
+		ComboBox<Integer> cbValoracion = new ComboBox<>();
+		cbValoracion.getItems().addAll(1, 2, 3, 4, 5);
+		cbValoracion.setPromptText("Valoración (1-5)");
+
+		// CheckBox para las secciones disponibles
+		Label lblSecciones = new Label("Seleccione las secciones:");
+		lblSecciones.setStyle("-fx-font-weight: bold;");
+
+		CheckBox chkBuceo = new CheckBox("BUCEO");
+		CheckBox chkBicicleta = new CheckBox("BICICLETA");
+		CheckBox chkParacaidas = new CheckBox("PARACAIDAS");
+		CheckBox chkFiestaJoven = new CheckBox("FIESTA-JOVEN");
+
+		VBox seccionesBox = new VBox(5, lblSecciones, chkBuceo, chkBicicleta, chkParacaidas, chkFiestaJoven);
+		seccionesBox.setStyle(
+				"-fx-background-color: rgba(255, 255, 255, 0.3);" + "-fx-padding: 10;" + "-fx-background-radius: 5;");
+
+		Button btnGuardar = crearBotonMenu("Guardar", "rgba(0, 128, 0, 0.7)", "rgba(0, 200, 0, 0.7)");
+		Button btnCancelar = crearBotonMenu("Cancelar", "rgba(255, 0, 0, 0.5)", "rgba(255, 50, 50, 0.7)");
+
+		HBox botones = new HBox(10, btnGuardar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnGuardar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
+
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
+		btnGuardar.setOnAction(e -> {
+			String codigo = tfCodigo.getText().trim();
+			LocalDate fechaIni = dpFechaIni.getValue();
+			LocalDate fechaFin = dpFechaFin.getValue();
+			Integer valoracion = cbValoracion.getValue();
+
+			// Validaciones
+			if (codigo.isEmpty()) {
+				etiquetaError(mensajeError, "DEBE INGRESAR UN CÓDIGO");
+				return;
+			}
+			if (fechaIni == null) {
+				etiquetaError(mensajeError, "DEBE SELECCIONAR FECHA DE INICIO");
+				return;
+			}
+			if (fechaFin == null) {
+				etiquetaError(mensajeError, "DEBE SELECCIONAR FECHA DE FIN");
+				return;
+			}
+			if (fechaFin.isBefore(fechaIni)) {
+				etiquetaError(mensajeError, "LA FECHA DE FIN DEBE SER POSTERIOR A LA FECHA DE INICIO");
+				return;
+			}
+
+			// Obtener secciones seleccionadas
+			ArrayList<String> seccionesSeleccionadas = new ArrayList<>();
+			if (chkBuceo.isSelected())
+				seccionesSeleccionadas.add("BUCEO");
+			if (chkBicicleta.isSelected())
+				seccionesSeleccionadas.add("BICICLETA");
+			if (chkParacaidas.isSelected())
+				seccionesSeleccionadas.add("PARACAIDAS");
+			if (chkFiestaJoven.isSelected())
+				seccionesSeleccionadas.add("FIESTA-JOVEN");
+
+			if (seccionesSeleccionadas.isEmpty()) {
+				etiquetaError(mensajeError, "DEBE SELECCIONAR AL MENOS UNA SECCIÓN");
+				return;
+			}
+
+			// Verificar que el código no exista ya
+			for (Asistencia asist : invitado.getAsistencia()) {
+				if (asist.getCodigo().equalsIgnoreCase(codigo)) {
+					etiquetaError(mensajeError, "EL CÓDIGO DE ASISTENCIA YA EXISTE");
+					return;
+				}
+			}
+
+			// Crear nueva asistencia
+			Asistencia nuevaAsistencia = new Asistencia(codigo, fechaIni, fechaFin, valoracion, seccionesSeleccionadas);
+
+			// Agregar la asistencia al invitado
+			invitado.getAsistencia().add(nuevaAsistencia);
+
+			// Actualizar en el archivo
+			int indice = Gestionar_Ficheros.indiceALPInvitado(personas, invitado.getDni());
+			personas.set(indice, invitado);
+			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+
+			// Volver a la vista de gestión de asistencia
+			gestionAsistencia3b(panel, invitado);
+		});
+
+		btnCancelar.setOnAction(e -> {
+			gestionAsistencia3b(panel, invitado);
+		});
+
+		contenedor.getChildren().addAll(titulo, infoInvitado, tfCodigo, dpFechaIni, dpFechaFin, cbValoracion,
+				seccionesBox, botones, mensajeError);
+
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
+	}
+
+	// form filtrado boton 4
+	private static void formFiltradoEntreDosFechas(GridPane panel) {
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(700, 250);
+
+		contenedor.setStyle("-fx-background-color: " + FONDO_TRANSPARENTE + ";" + "-fx-background-radius: 10;"
+				+ "-fx-border-radius: 10;" + "-fx-border-color: #cccccc;");
+
+		Label titulo = new Label("Introduce las fechas");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		DatePicker dpFecha1 = new DatePicker();
+		dpFecha1.setPromptText("Primera fecha");
+
+		DatePicker dpFecha2 = new DatePicker();
+		dpFecha2.setPromptText("Segunda fecha");
+
+		Button btnAplicar = crearBotonMenu("Aplicar filtros", "rgba(0, 128, 0, 0.7)", "rgba(0, 200, 0, 0.7)");
+		Button btnCancelar = crearBotonMenu("Cancelar", "rgba(255, 0, 0, 0.5)", "rgba(255, 50, 50, 0.7)");
+
+		HBox botones = new HBox(10, btnAplicar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnAplicar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
+
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
+		// acciones de los botones
+		btnAplicar.setOnAction(e -> {
+			LocalDate fecha1 = dpFecha1.getValue();
+			LocalDate fecha2 = dpFecha2.getValue();
+
+			if (fecha1 == null || fecha2 == null) {
+				etiquetaError(mensajeError, "DEBES SELECCIONAR AMBAS FECHAS");
+				return;
+			}
+
+			if (fecha2.isBefore(fecha1)) {
+				etiquetaError(mensajeError, "LA SEGUNDA FECHA NO PUEDE SER ANTERIOR A LA PRIMERA");
+				return;
+			}
+
+			ArrayList<Invitado> listaInvitados = Gestionar_Ficheros.listInvitado(PERSONA);
+
+			ArrayList<Invitado> filtrados = Gestionar_Ficheros.filtrarInvitadosEntreFechas(listaInvitados, fecha1,
+					fecha2);
+
+			if (filtrados.isEmpty()) {
+				etiquetaError(mensajeError, "NO HAY INVITADOS ENTRE ESAS FECHAS");
+				return;
+			}
+
+			invitadosFiltrados(panel, filtrados);
+
+		});
+
+		btnCancelar.setOnAction(e -> filtrado4b(panel));
+
+		contenedor.getChildren().addAll(titulo, dpFecha1, dpFecha2, botones, mensajeError);
+
+		eliminarElementoGrid(1, 0, panel);
+
+		panel.add(contenedor, 1, 0);
+
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
+
+	}
+
+	private static void formFiltradoPorEdad(GridPane panel) {
+
+		VBox contenedor = new VBox(15);
+		contenedor.setPadding(new Insets(20));
+		contenedor.setAlignment(Pos.TOP_CENTER);
+		contenedor.setMaxSize(600, 210);
+
+		contenedor.setStyle("-fx-background-color: " + FONDO_TRANSPARENTE + ";" + "-fx-background-radius: 10;"
+				+ "-fx-border-radius: 10;" + "-fx-border-color: #cccccc;");
+
+		Label titulo = new Label("Introduce la edad");
+		titulo.setStyle("-fx-font-size: 22px;" + "-fx-font-weight: bold;");
+
+		TextField tfEdad = new TextField();
+		tfEdad.setPromptText("Edad");
+
+		Button btnAplicar = crearBotonMenu("Aplicar filtro", "rgba(0, 128, 0, 0.7)", "rgba(0, 200, 0, 0.7)");
+		Button btnCancelar = crearBotonMenu("Cancelar", "rgba(255, 0, 0, 0.5)", "rgba(255, 50, 50, 0.7)");
+
+		HBox botones = new HBox(10, btnAplicar, btnCancelar);
+		botones.setAlignment(Pos.CENTER);
+		HBox.setHgrow(btnAplicar, Priority.ALWAYS);
+		HBox.setHgrow(btnCancelar, Priority.ALWAYS);
+
+		Label mensajeError = new Label();
+		mensajeError.setWrapText(true);
+
+		btnAplicar.setOnAction(e -> {
+			String edadTexto = tfEdad.getText().trim();
+
+			if (edadTexto.isEmpty() || !edadTexto.matches("\\d+")) {
+				etiquetaError(mensajeError, "INTRODUCE UNA EDAD VÁLIDA");
+				return;
+			}
+
+			int edad = Integer.parseInt(edadTexto);
+
+			ArrayList<Invitado> listaInvitados = Gestionar_Ficheros.listInvitado(PERSONA);
+
+			ArrayList<Invitado> filtrados = Gestionar_Ficheros.filtrarInvitadosPorEdad(listaInvitados, edad);
+
+			if (filtrados.isEmpty()) {
+				etiquetaError(mensajeError, "NO HAY INVITADOS CON ESA EDAD");
+				return;
+			}
+
+			invitadosFiltrados(panel, filtrados);
+
+		});
+		/*
+		 * String edad = tfEdad.getText();
+		 * 
+		 * if (edad == "") { etiquetaError(mensajeError,
+		 * "TODOS LOS CAMPOS SON NECESARIOS"); return; } else {
+		 * 
+		 * 
+		 * filtrado4b(panel); }
+		 * 
+		 * });
+		 */
+
+		btnCancelar.setOnAction(e -> filtrado4b(panel));
+
+		contenedor.getChildren().addAll(titulo, tfEdad, botones, mensajeError);
+
+		eliminarElementoGrid(1, 0, panel);
+
+		panel.add(contenedor, 1, 0);
+
+		GridPane.setHalignment(contenedor, HPos.CENTER);
+		GridPane.setValignment(contenedor, VPos.CENTER);
+
+	}
+
+	private static HBox grudFiltrado4b(GridPane panel) {
+		HBox box = new HBox(15);
+		box.setAlignment(Pos.CENTER);
+		box.setFillHeight(true);
+
+		// botones
+		Button btnFiltradoIzquierda = crearBotonMenu("Filtrado entre dos fechas", "rgba(0, 128, 0, 0.7)",
+				"rgba(0, 200, 0, 0.7)");
+		Button btnFiltradoDerecha = crearBotonMenu("Filtrado entre una edad determinada", "rgba(0, 128, 0, 0.7)",
+				"rgba(0, 200, 0, 0.7)");
+
+		// digo, que estos tienen prioridad al momento de ordenar
+		HBox.setHgrow(btnFiltradoIzquierda, Priority.ALWAYS);
+		HBox.setHgrow(btnFiltradoDerecha, Priority.ALWAYS);
+
+		box.getChildren().addAll(btnFiltradoIzquierda, btnFiltradoDerecha);
+
+		btnFiltradoIzquierda.setOnAction(e -> formFiltradoEntreDosFechas(panel));
+		btnFiltradoDerecha.setOnAction(e -> formFiltradoPorEdad(panel));
+
+		return box;
+	}
+
+	private static void invitadosFiltrados(GridPane panel, ArrayList<Invitado> listaFiltrada) {
+
+		VBox contenedor = new VBox(15);
+		contenedor.setAlignment(Pos.CENTER);
+		contenedor.setPadding(new Insets(20));
+
+		Label titulo = crearTitulo("INVITADOS FILTRADOS POR EDAD");
+
+		contenedor.getChildren().addAll(titulo, tablaInvitados(listaFiltrada), grudInvitados2b(panel) // o botones que
+																										// quieras
+		);
+
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
 	}
 
 	// Controles, basicamente los botones
@@ -878,15 +1210,15 @@ public class GestionPanel2 {
 
 		return box;
 	}
-	
-	private static HBox grudAsistencia3b(GridPane panel) {
+
+	private static HBox grudAsistencia3b(GridPane panel, Invitado invitado) {
 		HBox box = new HBox(15);
 		box.setAlignment(Pos.CENTER);
 		box.setFillHeight(true);
 
 		// botones
 		Button btnAgregar = crearBotonMenu("Agregar", "rgba(0, 128, 0, 0.7)", "rgba(0, 200, 0, 0.7)");
-		Button btnModificar = crearBotonMenu("Modificar", "rgba(0, 123, 255, 0.8)", "rgba(0, 153, 255, 1);");
+		Button btnModificar = crearBotonMenu("Atras", "rgba(255, 0, 0, 0.5)", "rgba(255, 50, 50, 0.7)");
 
 		// digo, que estos tienen prioridad al momento de ordenar
 		HBox.setHgrow(btnAgregar, Priority.ALWAYS);
@@ -894,8 +1226,8 @@ public class GestionPanel2 {
 
 		box.getChildren().addAll(btnAgregar, btnModificar);
 
-		btnAgregar.setOnAction(e -> System.out.println("AGREGA AQUI LA FUNCION PARA AGREGAR"));
-		btnModificar.setOnAction(e -> System.out.println("AGREGA AQUI LA FUNCION PARA MODIFICAR"));
+		btnAgregar.setOnAction(e -> formAgregarAsistencia(panel, invitado));
+		btnModificar.setOnAction(e -> formGestionAsistencia(panel));
 
 		return box;
 	}
