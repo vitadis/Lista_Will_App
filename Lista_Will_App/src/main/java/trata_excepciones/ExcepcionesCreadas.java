@@ -18,11 +18,22 @@ public class ExcepcionesCreadas {
 
 	// formato dni
 	public static void comprobarDni(String dni) throws FormatoIncorrectoException {
+		
 		Pattern modelo = Pattern.compile("\\d{8}[A-HJ-NP-TV-Z]");
 		Matcher matcher = modelo.matcher(dni);
 		if (!matcher.matches()) {
 			throw new FormatoIncorrectoException("DNI con formato incorrecto");
 		}
+		/*
+		final String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+
+		int numero = Integer.parseInt(dni.substring(0, 8));
+		char letraIntroducida = dni.charAt(8);
+		char letraCorrecta = letras.charAt(numero % 23);
+
+		if (letraIntroducida != letraCorrecta) {
+			throw new FormatoIncorrectoException("DNI con letra incorrecta la letra es "+letraIntroducida);
+		}*/
 	}
 
 	// formato numero telefono
