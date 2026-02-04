@@ -41,7 +41,7 @@ public class GestionPanel2 {
 	// Archivos
 	private static final File PERSONA = new File("persona.dat");
 	private static final File PERSONA_AUX = new File("persona.tmp");
-	
+
 	// -------VISTAS PRINCIPALES-------
 	@SuppressWarnings("exports")
 	public static GridPane panel2() {
@@ -121,6 +121,34 @@ public class GestionPanel2 {
 
 	}
 
+	private static void estadistica5b(GridPane panel) {
+
+		VBox contenedor = new VBox(15);
+		contenedor.setAlignment(Pos.CENTER);
+		contenedor.setPadding(new Insets(20));
+
+		Label titulo = crearTitulo("ESTADISTICA");
+
+		contenedor.getChildren().addAll(titulo, grudRankingb5(panel));
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+
+	}
+
+	// panel vacio que se modificara en caso de que agregue la tabla y la
+	// estadistica
+	private static <O> VBox panelVoidb5(TableView<O> tabla, String titu) {
+
+		VBox contenedor = new VBox(15);
+		contenedor.setAlignment(Pos.CENTER);
+		contenedor.setPadding(new Insets(20));
+
+		Label titulo = crearTitulo(titu);
+
+		contenedor.getChildren().addAll(titulo, tabla);
+		return contenedor;
+	}
+
 	// Panel izquierdo (El menu de opciones)
 	private static VBox parteIzqP2(GridPane panel) {
 		VBox menu = new VBox(20);
@@ -135,18 +163,21 @@ public class GestionPanel2 {
 		Button b2 = crearBotonMenu("2. Invitados", "rgba(0, 123, 255, 0.8)", "rgba(0, 153, 255, 1);");
 		Button b3 = crearBotonMenu("3. Gestionar asistencia", "rgba(0, 123, 255, 0.8)", "rgba(0, 153, 255, 1);");
 		Button b4 = crearBotonMenu("4. Filtrado", "rgba(0, 123, 255, 0.8)", "rgba(0, 153, 255, 1);");
-		Button b5 = crearBotonMenu("5. Salir", "rgba(255, 0, 0, 0.5)", "rgba(255, 50, 50, 0.7)");
+		Button b5 = crearBotonMenu("5. Estadisticas", "rgba(0, 123, 255, 0.8)", "rgba(0, 153, 255, 1);");
+		Button b6 = crearBotonMenu("6. Salir", "rgba(255, 0, 0, 0.5)", "rgba(255, 50, 50, 0.7)");
 
 		b1.setOnAction(e -> empleados1b(panel));
 		b2.setOnAction(e -> invitados2b(panel));
 		b3.setOnAction(e -> formGestionAsistencia(panel));
 		b4.setOnAction(e -> filtrado4b(panel));
-		b5.setOnAction(e -> {
+		b5.setOnAction(e -> estadistica5b(panel));
+
+		b6.setOnAction(e -> {
 			if (App.confirmarSalida())
 				Platform.exit();
 		});
 
-		menu.getChildren().addAll(will, new Separator(), b1, b2, b3, b4, new Region(), b5);
+		menu.getChildren().addAll(will, new Separator(), b1, b2, b3, b4, b5, new Region(), b6);
 
 		VBox.setVgrow(menu.getChildren().get(menu.getChildren().size() - 2), Priority.ALWAYS);
 		return menu;
@@ -200,6 +231,63 @@ public class GestionPanel2 {
 				crearColumna("FechaFin", "fechaFin", w), crearColumna("Secciones", "codSecciones", w),
 				crearColumna("Valoracion", "valoracion", w));
 		return table;
+	}
+
+	// tablas de las estadisticas
+	@SuppressWarnings({ "unchecked" })
+	private static void crearTablaRanking1(GridPane panel) {
+		ArrayList<Invitado> invitados = Gestionar_Ficheros.listInvitado(PERSONA);
+		ArrayList<RankingAsistencia> ranking = GestionarEstadisticas.estadisticaInvitados(invitados);
+		TableView<RankingAsistencia> tabla = new TableView<>();
+		estiloTabla(tabla);
+		double w = (WIDTH * 0.8 - 40) / 3;
+
+		tabla.getColumns().addAll(crearColumna("DNI", "dni", w), crearColumna("Nombre", "nombre", w),
+				crearColumna("Cant. Asistencias", "cantAsistencia", w));
+
+		tabla.getItems().addAll(ranking);
+
+		VBox contenedor = panelVoidb5(tabla, "CANTIDAD DE ASISTENCIA");
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+	}
+
+	// Porcentaje de la seccion con mejor calificacion
+	@SuppressWarnings("unchecked")
+	private static void crearTablaSecciones2(GridPane panel) {
+		ArrayList<Invitado> invitados = Gestionar_Ficheros.listInvitado(PERSONA);
+		ArrayList<RankingFechas> ranking = GestionarEstadisticas.estadisticaFechasRango(invitados);
+
+		TableView<RankingFechas> tabla = new TableView<>();
+		estiloTabla(tabla);
+
+		double w = (WIDTH * 0.8 - 40) / 2;
+
+		tabla.getColumns().addAll(crearColumna("Fecha", "fecha", w),
+				crearColumna("Cantidad", "cantidad", w));
+		tabla.getItems().addAll(ranking);
+		VBox contenedor = panelVoidb5(tabla, "Concurrencia por fechas");
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
+	}
+
+	// Porcentaje de asistencia a cada seccion
+	@SuppressWarnings("unchecked")
+	private static void crearTablaSecciones3(GridPane panel) {
+		ArrayList<Invitado> invitados = Gestionar_Ficheros.listInvitado(PERSONA);
+		ArrayList<RankingSeccion> ranking = GestionarEstadisticas.estadisticaSecciones(invitados);
+
+		TableView<RankingSeccion> tabla = new TableView<>();
+		estiloTabla(tabla);
+
+		double w = (WIDTH * 0.8 - 40) / 2;
+
+		tabla.getColumns().addAll(crearColumna("Seccion", "nombreSeccion", w),
+				crearColumna("Porcentaje", "porcentaje", w));
+		tabla.getItems().addAll(ranking);
+		VBox contenedor = panelVoidb5(tabla, "RECURENCIA POR SECCION");
+		eliminarElementoGrid(1, 0, panel);
+		panel.add(contenedor, 1, 0);
 	}
 
 	// --------FORMULARIOS--------
@@ -297,10 +385,10 @@ public class GestionPanel2 {
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
-			
-			if (mensaje!=null)
-				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
-			
+
+			if (mensaje != null)
+				mostrarAlerta("Éxito", mensaje, Alert.AlertType.INFORMATION);
+
 			empleados1b(panel);
 
 		});
@@ -363,10 +451,10 @@ public class GestionPanel2 {
 				personas.remove(indice);
 				Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 				String mensaje = Gestionar_Ficheros.actualizarPersonas();
-				
-				if (mensaje!=null)
-					mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
-				
+
+				if (mensaje != null)
+					mostrarAlerta("Éxito", mensaje, Alert.AlertType.INFORMATION);
+
 				empleados1b(panel);
 
 			} else {
@@ -529,9 +617,9 @@ public class GestionPanel2 {
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
-			
-			if (mensaje!=null)
-				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
+
+			if (mensaje != null)
+				mostrarAlerta("Éxito", mensaje, Alert.AlertType.INFORMATION);
 
 			empleados1b(panel);
 		});
@@ -641,9 +729,9 @@ public class GestionPanel2 {
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
-			
-			if (mensaje!=null)
-				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
+
+			if (mensaje != null)
+				mostrarAlerta("Éxito", mensaje, Alert.AlertType.INFORMATION);
 
 			invitados2b(panel);
 
@@ -795,9 +883,9 @@ public class GestionPanel2 {
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
 
-			if (mensaje!=null)
-				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
-			
+			if (mensaje != null)
+				mostrarAlerta("Éxito", mensaje, Alert.AlertType.INFORMATION);
+
 			invitados2b(panel);
 
 		});
@@ -985,9 +1073,8 @@ public class GestionPanel2 {
 			personas.set(indice, invitado);
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA_AUX);
 			String mensaje = Gestionar_Ficheros.actualizarPersonas();
-			if (mensaje!=null)
-				mostrarAlerta("Éxito",mensaje, Alert.AlertType.INFORMATION);
-
+			if (mensaje != null)
+				mostrarAlerta("Éxito", mensaje, Alert.AlertType.INFORMATION);
 
 			// Volver a la vista de gestión de asistencia
 			gestionAsistencia3b(panel, invitado);
@@ -1160,9 +1247,9 @@ public class GestionPanel2 {
 		box.setFillHeight(true);
 
 		// botones
-		Button btnFiltradoIzquierda = crearBotonMenu("Filtrado entre dos fechas", "rgba(0, 128, 0, 0.7)",
+		Button btnFiltradoIzquierda = crearBotonMenu("Entre dos fechas (ASISTENCIA)", "rgba(0, 128, 0, 0.7)",
 				"rgba(0, 200, 0, 0.7)");
-		Button btnFiltradoDerecha = crearBotonMenu("Filtrado entre una edad determinada", "rgba(0, 128, 0, 0.7)",
+		Button btnFiltradoDerecha = crearBotonMenu("Mayor que... (INVITADOS)", "rgba(0, 128, 0, 0.7)",
 				"rgba(0, 200, 0, 0.7)");
 
 		// digo, que estos tienen prioridad al momento de ordenar
@@ -1185,9 +1272,7 @@ public class GestionPanel2 {
 
 		Label titulo = crearTitulo("INVITADOS FILTRADOS POR EDAD");
 
-		contenedor.getChildren().addAll(titulo, tablaInvitados(listaFiltrada), grudInvitados2b(panel) // o botones que
-																										// quieras
-		);
+		contenedor.getChildren().addAll(titulo, tablaInvitados(listaFiltrada));
 
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
@@ -1260,6 +1345,36 @@ public class GestionPanel2 {
 		return box;
 	}
 
+	private static HBox grudRankingb5(GridPane panel) {
+
+		HBox box = new HBox(15);
+		box.setAlignment(Pos.CENTER);
+		box.setFillHeight(true);
+
+		// Botones de estadísticas
+		Button btnEstadisticaAsistencias = crearBotonMenu("Ranking Asistencias", "rgba(0, 0, 180, 0.6)",
+				"rgba(50, 50, 255, 0.8)");
+
+		Button btnEstadisticaValoracion = crearBotonMenu("Valoraciones", "rgba(90, 0, 120, 0.6)",
+				"rgba(150, 0, 200, 0.8)");
+
+		Button btnEstadisticaSecciones = crearBotonMenu("Secciones más visitadas", "rgba(120, 120, 0, 0.6)",
+				"rgba(200, 200, 0, 0.8)");
+
+		HBox.setHgrow(btnEstadisticaAsistencias, Priority.ALWAYS);
+		HBox.setHgrow(btnEstadisticaValoracion, Priority.ALWAYS);
+		HBox.setHgrow(btnEstadisticaSecciones, Priority.ALWAYS);
+
+		box.getChildren().addAll(btnEstadisticaAsistencias, btnEstadisticaValoracion, btnEstadisticaSecciones);
+
+		// funciones para la estadistica
+		btnEstadisticaAsistencias.setOnAction(e -> crearTablaRanking1(panel));
+		btnEstadisticaValoracion.setOnAction(e -> crearTablaSecciones2(panel));
+		btnEstadisticaSecciones.setOnAction(e -> crearTablaSecciones3(panel));
+
+		return box;
+	}
+
 	private static Button crearBotonMenu(String texto, String color_n, String color_h) {
 		Button btn = new Button(texto);
 		btn.setMaxWidth(Double.MAX_VALUE);
@@ -1309,7 +1424,7 @@ public class GestionPanel2 {
 				"-fx-text-fill: #D32F2F;" + "-fx-font-weight: bold;" + "-fx-background-color: rgba(255, 255, 0, 0.3);"
 						+ "-fx-background-radius: 10;" + "-fx-padding: 8 12 8 12;" + "-fx-alignment: center;");
 	}
-	
+
 	// alerta error
 	private static void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
 		Alert alert = new Alert(tipo);
@@ -1318,7 +1433,7 @@ public class GestionPanel2 {
 		alert.setContentText(mensaje);
 		alert.showAndWait();
 	}
-	
+
 	private static <T> TableColumn<T, String> crearColumna(String titulo, String atri, double width) {
 		// T es una variable generica de cualquier clase
 		TableColumn<T, String> col = new TableColumn<>(titulo);
