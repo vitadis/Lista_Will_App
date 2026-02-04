@@ -1241,29 +1241,6 @@ public class GestionPanel2 {
 
 	}
 
-	private static HBox grudFiltrado4b(GridPane panel) {
-		HBox box = new HBox(15);
-		box.setAlignment(Pos.CENTER);
-		box.setFillHeight(true);
-
-		// botones
-		Button btnFiltradoIzquierda = crearBotonMenu("Entre dos fechas (ASISTENCIA)", "rgba(0, 128, 0, 0.7)",
-				"rgba(0, 200, 0, 0.7)");
-		Button btnFiltradoDerecha = crearBotonMenu("Mayor que... (INVITADOS)", "rgba(0, 128, 0, 0.7)",
-				"rgba(0, 200, 0, 0.7)");
-
-		// digo, que estos tienen prioridad al momento de ordenar
-		HBox.setHgrow(btnFiltradoIzquierda, Priority.ALWAYS);
-		HBox.setHgrow(btnFiltradoDerecha, Priority.ALWAYS);
-
-		box.getChildren().addAll(btnFiltradoIzquierda, btnFiltradoDerecha);
-
-		btnFiltradoIzquierda.setOnAction(e -> formFiltradoEntreDosFechas(panel));
-		btnFiltradoDerecha.setOnAction(e -> formFiltradoPorEdad(panel));
-
-		return box;
-	}
-
 	private static void invitadosFiltrados(GridPane panel, ArrayList<Invitado> listaFiltrada) {
 
 		VBox contenedor = new VBox(15);
@@ -1342,6 +1319,29 @@ public class GestionPanel2 {
 		btnAgregar.setOnAction(e -> formAgregarAsistencia(panel, invitado));
 		btnModificar.setOnAction(e -> formGestionAsistencia(panel));
 
+		return box;
+	}
+
+	private static HBox grudFiltrado4b(GridPane panel) {
+		HBox box = new HBox(15);
+		box.setAlignment(Pos.CENTER);
+		box.setFillHeight(true);
+	
+		// botones
+		Button btnFiltradoIzquierda = crearBotonMenu("Entre dos fechas (ASISTENCIA)", "rgba(0, 128, 0, 0.7)",
+				"rgba(0, 200, 0, 0.7)");
+		Button btnFiltradoDerecha = crearBotonMenu("Mayor que... (INVITADOS)", "rgba(0, 128, 0, 0.7)",
+				"rgba(0, 200, 0, 0.7)");
+	
+		// digo, que estos tienen prioridad al momento de ordenar
+		HBox.setHgrow(btnFiltradoIzquierda, Priority.ALWAYS);
+		HBox.setHgrow(btnFiltradoDerecha, Priority.ALWAYS);
+	
+		box.getChildren().addAll(btnFiltradoIzquierda, btnFiltradoDerecha);
+	
+		btnFiltradoIzquierda.setOnAction(e -> formFiltradoEntreDosFechas(panel));
+		btnFiltradoDerecha.setOnAction(e -> formFiltradoPorEdad(panel));
+	
 		return box;
 	}
 
