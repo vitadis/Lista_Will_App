@@ -1,10 +1,12 @@
 package org.openjfx.Lista_Will_App;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -104,8 +106,7 @@ public class Gestionar_Ficheros {
 			e.printStackTrace();
 		}
 	}
-
-	// retornar arraylist de secciones.csv
+	
 
 	public static void inicializarDatos() {
 		File filePer = new File("persona.dat");
