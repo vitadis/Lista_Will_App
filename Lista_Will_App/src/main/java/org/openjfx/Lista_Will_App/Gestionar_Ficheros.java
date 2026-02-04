@@ -80,10 +80,9 @@ public class Gestionar_Ficheros {
 		}
 	}
 
-
 	// sobreescribir secciones
 	public static void sobreEscribirSec() {
-		File archivo = new File("Secciones.dat");
+		File archivo = new File("secciones.dat");
 		ArrayList<Seccion> secciones = new ArrayList<Seccion>();
 		secciones.add(new Seccion("BUCEO", "buceo.com"));
 		secciones.add(new Seccion("BICICLETA", "bicicleta.com"));
@@ -101,7 +100,7 @@ public class Gestionar_Ficheros {
 	}
 
 	public static void inicializarDatos() {
-		File filePer = new File("Persona.dat");
+		File filePer = new File("persona.dat");
 
 		ArrayList<Persona> personas = new ArrayList<>();
 
@@ -184,7 +183,7 @@ public class Gestionar_Ficheros {
 		}
 		return -1;
 	}
-	
+
 	@SuppressWarnings("exports")
 	public static int indiceALPInvitado(ArrayList<Persona> lista, String dni) {
 		int indice = 0;
@@ -216,35 +215,59 @@ public class Gestionar_Ficheros {
 	// aplicar filtros
 	@SuppressWarnings("exports")
 	public static ArrayList<Invitado> filtrarInvitadosPorEdad(ArrayList<Invitado> lista, int edadMinima) {
-	   ArrayList<Invitado> filtrados = new ArrayList<>();
+		ArrayList<Invitado> filtrados = new ArrayList<>();
 
-	   for (Invitado i : lista) {
-	       int edad = calcularEdad(i.getFechaNac());
-	       if (edad >= edadMinima) {
-	           filtrados.add(i);
-	       }
-	   }
-	   return filtrados;
+		for (Invitado i : lista) {
+			int edad = calcularEdad(i.getFechaNac());
+			if (edad >= edadMinima) {
+				filtrados.add(i);
+			}
+		}
+		return filtrados;
 	}
 
 	public static int calcularEdad(LocalDate fechaNac) {
-	   return Period.between(fechaNac, LocalDate.now()).getYears();
+		return Period.between(fechaNac, LocalDate.now()).getYears();
 	}
 
 	@SuppressWarnings("exports")
-	public static ArrayList<Invitado> filtrarInvitadosEntreFechas(ArrayList<Invitado> lista, LocalDate fechaInicio, LocalDate fechaFin) {
+	public static ArrayList<Invitado> filtrarInvitadosEntreFechas(ArrayList<Invitado> lista, LocalDate fechaInicio,
+			LocalDate fechaFin) {
 
-	   ArrayList<Invitado> filtrados = new ArrayList<>();
+		ArrayList<Invitado> filtrados = new ArrayList<>();
 
-	   for (Invitado i : lista) {
-	       LocalDate fechaNac = i.getFechaNac();
+		for (Invitado i : lista) {
+			LocalDate fechaNac = i.getFechaNac();
 
-	       if ((fechaNac.isEqual(fechaInicio) || fechaNac.isAfter(fechaInicio)) &&
-	           (fechaNac.isEqual(fechaFin) || fechaNac.isBefore(fechaFin))) {
+			if ((fechaNac.isEqual(fechaInicio) || fechaNac.isAfter(fechaInicio))
+					&& (fechaNac.isEqual(fechaFin) || fechaNac.isBefore(fechaFin))) {
 
-	           filtrados.add(i);
-	       }
-	   }
-	   return filtrados;
+				filtrados.add(i);
+			}
+		}
+		return filtrados;
 	}
+
+	// gestionar ficheros
+	public static String actualizarPersonas() {
+		File fOriginal = new File("personas.dat");
+		File fAuxiliar = new File("personas.tmp");
+		File fBackup = new File("personas.bak");
+
+		// Proceso de sustitución y backup
+		if (fOriginal.exists()) {
+			if (fBackup.exists())
+				fBackup.delete();
+			if (fOriginal.renameTo(fBackup)) {
+				fAuxiliar.renameTo(fOriginal);
+				return "Backup creado y fichero actualizado.";
+			}
+		} else {
+			// Si no existía original, el auxiliar simplemente se renombra
+			fAuxiliar.renameTo(fOriginal);
+			return "Primer fichero creado.";
+		}
+		return null;
+	}
+
 }

@@ -41,7 +41,7 @@ public class GestionPanel2 {
 	private static final int HEIGHT = SCREEN_SIZE.height - 70;
 
 	// Archivos
-	private static final File PERSONA = new File("Persona.dat");
+	private static final File PERSONA = new File("persona.dat");
 
 	// -------VISTAS PRINCIPALES-------
 	@SuppressWarnings("exports")
@@ -297,6 +297,7 @@ public class GestionPanel2 {
 			personas.add(nuevoEmpleado);
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			String mensaje = Gestionar_Ficheros.actualizarPersonas();
 			empleados1b(panel);
 
 		});
@@ -358,6 +359,8 @@ public class GestionPanel2 {
 			if (indice != -1) {
 				personas.remove(indice);
 				Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+				String mensaje = Gestionar_Ficheros.actualizarPersonas();
+
 				empleados1b(panel);
 
 			} else {
@@ -519,6 +522,8 @@ public class GestionPanel2 {
 			personas.set(indice, cambiarEmpleado);
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			String mensaje = Gestionar_Ficheros.actualizarPersonas();
+
 			empleados1b(panel);
 		});
 
@@ -626,6 +631,8 @@ public class GestionPanel2 {
 			personas.add(nuevoInvitado);
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			String mensaje = Gestionar_Ficheros.actualizarPersonas();
+
 			invitados2b(panel);
 
 		});
@@ -774,6 +781,8 @@ public class GestionPanel2 {
 			personas.set(indice, nuevoInvitado);
 			// sobreescribo sin mas a mi archivo
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			String mensaje = Gestionar_Ficheros.actualizarPersonas();
+
 			invitados2b(panel);
 
 		});
@@ -960,6 +969,8 @@ public class GestionPanel2 {
 			int indice = Gestionar_Ficheros.indiceALPInvitado(personas, invitado.getDni());
 			personas.set(indice, invitado);
 			Gestionar_Ficheros.sobreEscribirPersona(personas, PERSONA);
+			String mensaje = Gestionar_Ficheros.actualizarPersonas();
+
 
 			// Volver a la vista de gestión de asistencia
 			gestionAsistencia3b(panel, invitado);
