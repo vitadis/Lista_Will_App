@@ -23,7 +23,6 @@ public class App extends Application {
 	final int HEIGHT = screenSize.height - 70;
 
 	@Override
-
 	public void start(@SuppressWarnings("exports") Stage stage) {
 
 		// Iniciar con la pantalla de login

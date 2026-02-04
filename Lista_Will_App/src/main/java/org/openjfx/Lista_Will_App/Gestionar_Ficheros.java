@@ -1,9 +1,12 @@
 package org.openjfx.Lista_Will_App;
 
+import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalDate;
@@ -82,22 +85,27 @@ public class Gestionar_Ficheros {
 
 	// sobreescribir secciones
 	public static void sobreEscribirSec() {
-		File archivo = new File("secciones.dat");
 		ArrayList<Seccion> secciones = new ArrayList<Seccion>();
 		secciones.add(new Seccion("BUCEO", "buceo.com"));
 		secciones.add(new Seccion("BICICLETA", "bicicleta.com"));
 		secciones.add(new Seccion("PARACAIDAS", "paracaidas.com"));
 		secciones.add(new Seccion("FIESTA-JOVEN", "fiestaJoven.com"));
 
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
-			for (Seccion s : secciones) {
-				oos.writeObject(s);
-			}
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter("secciones.csv"))) {
 
-		} catch (Exception e) {
-			System.out.println("Error de escritura: " + e.getMessage());
+			bw.write("codigo,nombre,url");
+			bw.newLine();
+
+			for (Seccion c : secciones) {
+				bw.write(c.toCsv());
+				bw.newLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
+
+	// retornar arraylist de secciones.csv
 
 	public static void inicializarDatos() {
 		File filePer = new File("persona.dat");

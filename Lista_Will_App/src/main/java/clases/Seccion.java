@@ -50,5 +50,8 @@ public class Seccion implements Serializable{
 	@Override
 	public String toString() {
 		return "Seccion [codigo=" + codigo + ", nombre=" + nombre + ", url=" + url + "]";
-	}	
+	}
+	public String toCsv() {
+		return codigo+","+nombre+","+url;
+	}
 }
