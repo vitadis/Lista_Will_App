@@ -1,0 +1,76 @@
+-- nodos Parent
+	StackPane: superpone nodos (uno encima de otro)
+	VBox / HBox: disposición lineal
+		V ertical, H orizontal
+	BorderPane: layout por regiones
+		Podemos dividir por secciones (top,bottom,left,right,center)
+	GridPane: layout en tabla
+		Cuando necesitamos una cuadricula, muy similar al grid de html
+	AnchorPane: posicionamiento manual
+		Distancias exatas, posicionamiento manual
+
+-- nodos children 
+	- Nodos de control
+		Label							Muestra texto o imágenes (no editable)
+		Button							Ejecuta una acción al hacer clic
+		TextField						Entrada de texto de una sola línea
+		PasswordField					Entrada de texto oculto
+		TextArea						Entrada de texto multilínea
+		CheckBox						Selección verdadera/falsa
+		RadioButton						Selección exclusiva dentro de un ToggleGroup
+		ComboBox<T>						Lista desplegable
+		ChoiceBox<T>					Selección simple (más ligera que ComboBox)
+		Slider							Selección de un valor numérico
+		ProgressBar / ProgressIndicator	Indica progreso
+		TableView<T>					Tabla de datos
+		ListView<T>						Lista de elementos
+		TreeView<T>						Estructura jerárquica
+		DatePicker						Selección de fechas
+		ColorPicker						Selección de color
+
+	- Nodos de layout (Pane)
+		Pane							Layout base, posicionamiento manual
+		StackPane						Superpone nodos
+		VBox							Disposición vertical
+		HBox							Disposición horizontal
+		BorderPane						Regiones (top, bottom, left, right, center)
+		GridPane						Filas y columnas
+		FlowPane						Flujo automático (como texto)
+		TilePane						Celdas del mismo tamaño
+		AnchorPane						Anclaje a bordes
+	
+	- Nodos de texto y forma (no controles)
+							Texto
+		Nodo							Funcionalidad
+		Text							Texto gráfico (más control que Label)
+		Formas 							(Shape)
+						Nodo Funcionalidad
+		Rectangle						Rectángulo
+		Circle							Círculo
+		Ellipse							Elipse
+		Line							Línea
+		Polygon							Polígono
+		Polyline						Línea compuesta
+		Arc								Arco
+	
+	- Nodos multimedia
+		ImageView						Muestra imágenes
+		MediaView						Reproduce video
+		Canvas							Dibujo manual con GraphicsContext
+	
+	- Nodos contenedores especiales
+		Group							Agrupa nodos sin layout
+		ScrollPane						Contenido con scroll
+		SplitPane						Paneles redimensionables
+		TabPane							Pestañas
+		Accordion						Paneles expandibles
+		TitledPane						Panel con título
+		
+	- Regla clave (muy importante)
+		Scene
+  			└── Parent (root)
+        		└── Node(s)
+
+	- Mas notas
+		Los nodos derivados de los paneles, pueden tener dentro, otros nodos como los de control,
+		los que no son de control, etc...
