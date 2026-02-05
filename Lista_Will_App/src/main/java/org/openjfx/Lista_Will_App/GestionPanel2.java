@@ -228,7 +228,7 @@ public class GestionPanel2 {
 		double w = (WIDTH * 0.8 - 40) / 5;
 
 		table.getColumns().addAll(crearColumna("COD", "codigo", w), crearColumna("FechaInicio", "fechaIni", w),
-				crearColumna("FechaFin", "fechaFin", w), crearColumna("Secciones", "codSecciones", w),
+				crearColumna("FechaFin", "fechaFin", w), crearColumna("Secciones", "nombre", w),
 				crearColumna("Valoracion", "valoracion", w));
 		return table;
 	}
@@ -266,7 +266,7 @@ public class GestionPanel2 {
 		tabla.getColumns().addAll(crearColumna("Fecha", "fecha", w),
 				crearColumna("Cantidad", "cantidad", w));
 		tabla.getItems().addAll(ranking);
-		VBox contenedor = panelVoidb5(tabla, "Concurrencia por fechas");
+		VBox contenedor = panelVoidb5(tabla, "Ranking por fechas");
 		eliminarElementoGrid(1, 0, panel);
 		panel.add(contenedor, 1, 0);
 	}
@@ -1340,7 +1340,7 @@ public class GestionPanel2 {
 		Button btnEstadisticaAsistencias = crearBotonMenu("Ranking Asistencias", "rgba(0, 0, 180, 0.6)",
 				"rgba(50, 50, 255, 0.8)");
 
-		Button btnEstadisticaValoracion = crearBotonMenu("Valoraciones", "rgba(90, 0, 120, 0.6)",
+		Button btnEstadisticaValoracion = crearBotonMenu("Ranking por fechas", "rgba(90, 0, 120, 0.6)",
 				"rgba(150, 0, 200, 0.8)");
 
 		Button btnEstadisticaSecciones = crearBotonMenu("Secciones más visitadas", "rgba(120, 120, 0, 0.6)",
