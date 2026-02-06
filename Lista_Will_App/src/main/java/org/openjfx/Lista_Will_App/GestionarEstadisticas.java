@@ -51,14 +51,14 @@ public class GestionarEstadisticas {
 
 				for (Asistencia as : asistencias) {
 
-					ArrayList<String> cods = as.getNombre();
-					if (cods == null || cods.isEmpty())
+					ArrayList<String> nombresSec = as.getNombre();
+					if (nombresSec == null || nombresSec.isEmpty())
 						continue;
 
-					for (String cod : cods) {
-						int idx = secciones.indexOf(cod);
+					for (String s : nombresSec) {
+						int idx = secciones.indexOf(s);
 						if (idx == -1) {
-							secciones.add(cod);
+							secciones.add(s);
 							conteo.add(1);
 						} else {
 							conteo.set(idx, conteo.get(idx) + 1);

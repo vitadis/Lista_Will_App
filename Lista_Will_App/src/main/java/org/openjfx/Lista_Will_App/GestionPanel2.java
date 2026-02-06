@@ -1201,17 +1201,6 @@ public class GestionPanel2 {
 			invitadosFiltrados(panel, filtrados);
 
 		});
-		/*
-		 * String edad = tfEdad.getText();
-		 * 
-		 * if (edad == "") { etiquetaError(mensajeError,
-		 * "TODOS LOS CAMPOS SON NECESARIOS"); return; } else {
-		 * 
-		 * 
-		 * filtrado4b(panel); }
-		 * 
-		 * });
-		 */
 
 		btnCancelar.setOnAction(e -> filtrado4b(panel));
 
