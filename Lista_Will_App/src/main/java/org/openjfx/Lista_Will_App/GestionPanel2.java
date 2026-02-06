@@ -1376,7 +1376,7 @@ public class GestionPanel2 {
 			Alert alerta = new Alert(Alert.AlertType.ERROR);
 			alerta.setTitle("Error");
 			alerta.setHeaderText(null);
-			alerta.setContentText("DIAGO DEJA DE ACOSAR MENORES");
+			alerta.setContentText("DIAGO NETANYAHU");
 			alerta.showAndWait();
 		}
 
